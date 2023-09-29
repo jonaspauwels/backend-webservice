@@ -1,4 +1,4 @@
-# Voornaam Familienaam (Studentennummer)
+# Jonas Pauwels (202181093)
 
 > Duid aan welke vakken je volgt en vermeld voor deze vakken de link naar jouw GitHub repository. In het geval je slechts één vak volgt, verwijder alle inhoud omtrent het andere vak uit dit document.
 > Lees <https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet> om te weten hoe een Markdown-bestand opgemaakt moet worden.
@@ -7,8 +7,8 @@
 - [ ] Front-end Web Development
   - <GITHUB_REPO_LINK_HIER>
   - <LINK_ONLINE_VERSIE_HIER>
-- [ ] Web Services:
-  - <GITHUB_REPO_LINK_HIER>
+- [x] Web Services:
+  - <https://github.com/Web-IV/2324-webservices-jonaspauwels>
   - <LINK_ONLINE_VERSIE_HIER>
 
 **Logingegevens**
@@ -21,11 +21,6 @@
 ## Projectbeschrijving
 
 > Omschrijf hier duidelijk waarover jouw project gaat. Voeg een domeinmodel (of EERD) toe om jouw entiteiten te verduidelijken.
-
-## Screenshots
-
-> Voeg enkele (nuttige!) screenshots toe die tonen wat de app doet.
-> Dit is weinig zinvol indien je enkel Web Services volgt, verwijder dan deze sectie.
 
 ## API calls
 
@@ -51,13 +46,13 @@
   - [ ] definieert constanten (variabelen, functies en componenten) buiten de component
   - [ ] minstens één form met meerdere velden met validatie (naast login/register)
   - [ ] login systeem
-<br />
+        <br />
 
 - **routing**
 
   - [ ] heeft minstens 2 pagina's (naast login/register)
   - [ ] routes worden afgeschermd met authenticatie en autorisatie
-<br />
+        <br />
 
 - **state-management**
 
@@ -65,12 +60,12 @@
   - [ ] degelijke foutmeldingen indien API-call faalt
   - [ ] gebruikt useState enkel voor lokale state
   - [ ] gebruikt gepast state management voor globale state - indien van toepassing
-<br />
+        <br />
 
 - **hooks**
 
   - [ ] gebruikt de hooks op de juiste manier
-<br />
+        <br />
 
 - **varia**
 
@@ -88,19 +83,19 @@
   - [ ] één module beheert de connectie + connectie wordt gesloten bij sluiten server
   - [ ] heeft migraties - indien van toepassing
   - [ ] heeft seeds
-<br />
+        <br />
 
 - **repositorylaag**
 
   - [ ] definieert één repository per entiteit (niet voor tussentabellen) - indien van toepassing
   - [ ] mapt OO-rijke data naar relationele tabellen en vice versa - indien van toepassing
-<br />
+        <br />
 
 - **servicelaag met een zekere complexiteit**
 
   - [ ] bevat alle domeinlogica
   - [ ] bevat geen SQL-queries of databank-gerelateerde code
-<br />
+        <br />
 
 - **REST-laag**
 
@@ -110,7 +105,7 @@
   - [ ] bevat geen domeinlogica
   - [ ] geen API calls voor entiteiten die geen zin hebben zonder hun ouder (bvb tussentabellen)
   - [ ] degelijke authorisatie/authenticatie op alle routes
-<br />
+        <br />
 
 - **algemeen**
 
