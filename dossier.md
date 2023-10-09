@@ -4,9 +4,6 @@
 > Lees <https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet> om te weten hoe een Markdown-bestand opgemaakt moet worden.
 > Verwijder alle instructies (lijnen die starten met >).
 
-- [ ] Front-end Web Development
-  - <GITHUB_REPO_LINK_HIER>
-  - <LINK_ONLINE_VERSIE_HIER>
 - [x] Web Services:
   - <https://github.com/Web-IV/2324-webservices-jonaspauwels>
   - <LINK_ONLINE_VERSIE_HIER>
@@ -20,18 +17,58 @@
 
 ## Projectbeschrijving
 
-> Omschrijf hier duidelijk waarover jouw project gaat. Voeg een domeinmodel (of EERD) toe om jouw entiteiten te verduidelijken.
+### Omschrijving
+
+Het project behandeld een stockbeheersysteem voor koelcellen in de landbouw, meer bepaald voor de fruitsector. Bedoeling is dat de landbouwer kan zien welk fruit van
+welke boomgaard in welke koelcel zit en vice versa. Er wordt ook bijgehouden of een koelcel behandeld werd met een product. Als laatste worden ook de laatste veilingprijzen hieraan gelinkt.
+
+### ERD
+
+![alt text](./ER/../ERD/ERD.svg "ERD schema")
 
 ## API calls
 
 > Maak hier een oplijsting van alle API cals in jouw applicatie. Groepeer dit per entiteit. Hieronder een voorbeeld.
-> Dit is weinig zinvol indien je enkel Front-end Web Development volgt, verwijder dan deze sectie.
-> Indien je als extra Swagger koos, dan voeg je hier een link toe naar jouw online documentatie. Swagger geeft nl. exact (en nog veel meer) wat je hieronder moet schrijven.
 
-### Gebruikers
+### Oogstplaats
 
-- `GET /api/users`: alle gebruikers ophalen
-- `GET /api/users/:id`: gebruiker met een bepaald id ophalen
+- `GET /api/oogstplaatsen`: alle oogstplaatsen ophalen
+- `GET /api/oogstplaatsen/:id`: oogstplaats met een bepaald id ophalen
+- `POST /api/oogstplaatsen` : nieuwe oogstplaats toevoegen
+- `PUT /api/oogstplaatsen/:id`: oogstplaats met bepaald id aanpassen
+- `DELETE /api/oogstplaatsen/:id`: oogstplaats met bepaald id verwijderen
+
+### Fruitsoort
+
+- `GET /api/fruitsoorten`: alle fruitsoorten ophalen
+- `GET /api/fruitsoorten/:id`: fruitsoort met bepaald id ophalen
+- `POST /api/fruitsoorten`: nieuwe fruitsoort toevoegen met hoeveelheid en koelcelid
+- `PUT /api/fruitsoorten/:id`: fruitsoort met bepaald id aanpassen
+- `DELETE /api/fruitsoorten/:id`: fruitsoort met bepaald id verwijderen
+
+### Koelcel
+
+- `GET /api/koelcellen`: alle koelcellen ophalen
+- `GET /api/koelcellen/:id`: koelcel met bepaald id ophalen
+- `POST /api/koelcellen`: nieuwe koelcel toevoegen
+- `PUT /api/koelcel/:id`: koelcel met bepaald id aanpassen
+- `DELETE /apie/koelcel/:id`: koelcel met bepaald id verwijderen
+
+### Product
+
+- `GET /api/producten`: alle producten ophalen
+- `GET /api/producten/:id`: product met bepaald id ophalen
+- `POST /api/producten`: nieuw product toevoegen
+- `PUT /api/producten/:id`: product met bepaald id aanpassen
+- `DELETE /api/producten/:id`: product met bepaald id verwijderen
+
+### Behandeling
+
+- `GET /api/behandelingen`: alle behandelingen ophalen
+- `GET /api/behandelingen/:id`: behandeling met bepaald id ophalen
+- `POST /api/behandelingen`: nieuwe behandeling toevoegen
+- `PUT /api/behandelingen/:id`: behandeling met bepaald id aanpassen
+- `DELETE /api/producten/:id`: behandeling met bepaald id verwijderen
 
 ## Behaalde minimumvereisten
 

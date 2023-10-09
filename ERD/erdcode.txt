@@ -1,0 +1,34 @@
+[Fruitsoort]
+*id
+naam
+variëteit
+prijsper100kg
++oogstplaats
+
+[Koelcel]
+*id
+capaciteit
++behandeldMet
+
+[Product]
+*id
+naam
+beschrijving
+
+[Oogstplaats]
+*id
+naam
+geolocatie
+grootte
+
+[Behandeling]
++*KoelcelId
++*ProductId
+hoeveelheid
+startdatum
+einddatum
+
+Fruitsoort *--+ Koelcel
+Koelcel 1--* Behandeling
+Product 1--* Behandeling
+Fruitsoort 1--1 Oogstplaats
