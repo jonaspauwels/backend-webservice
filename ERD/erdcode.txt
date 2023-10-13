@@ -27,7 +27,13 @@ hoeveelheid
 startdatum
 einddatum
 
-Fruitsoort *--+ Koelcel
+[HoeveelheidPerKoelcel]
++*FruitID
++*KoelcelID
+hoeveelheid
+
 Koelcel 1--* Behandeling
 Product 1--* Behandeling
 Fruitsoort *--1 Oogstplaats
+Koelcel 1--* HoeveelheidPerKoelcel
+Fruitsoort 1--* HoeveelheidPerKoelcel

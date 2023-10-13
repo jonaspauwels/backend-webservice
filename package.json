@@ -2,19 +2,38 @@
   "name": "fruitinventory",
   "version": "1.0.0",
   "description": "beheer van stock in de fruitsector",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "git@github.com:Web-IV/2324-webservices-jonaspauwels.git",
   "author": "Jonas Pauwels <jonas.pauwels@student.hogent.be>",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "env-cmd nodemon"
   },
   "dependencies": {
+    "@koa/router": "^11.0.2",
+    "config": "^3.3.9",
     "koa": "^2.14.2",
+    "koa-bodyparser": "^4.4.1",
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "nodemon": "^3.0.1"
+  },
+  "nodemonConfig": {
+    "signal": "SIGTERM",
+    "ignore": [
+      "node_modules/*",
+      ".vscode/*"
+    ],
+    "delay": "80",
+    "watch": [
+      "config",
+      "src"
+    ],
+    "ext": "js,json",
+    "legacyWatch": true,
+    "exec": "node --inspect=0.0.0.0:9001 --trace-warnings src/index.js"
   }
 }
