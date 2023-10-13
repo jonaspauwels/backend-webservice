@@ -22,4 +22,18 @@ let FRUITSOORTEN = [
     }
 ];
 
-module.exports = { FRUITSOORTEN };
+let OOGSTPLAATSEN = [
+    {
+        id: 1,
+        naam: 'Leenaerts',
+        geolocatie: {
+            latitude: 51.267028,
+            longitude: 4.163944,
+        },
+        oppervlakteInHectaren: 3.6
+    }
+    
+    
+]
+
+module.exports = { FRUITSOORTEN, OOGSTPLAATSEN };

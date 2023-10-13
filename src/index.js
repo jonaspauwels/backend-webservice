@@ -27,6 +27,13 @@ router.get('/api/transactions', async (ctx) => {
   ctx.body = transactionService.getAll();
 });
 
+router.post('/api/transactions', async (ctx) => {
+  const newTransaction = transactionService.create({
+    ...ctx.request.body
+  });
+  ctx.body = newTransaction;
+})
+
 app.use(router.routes())
   .use(router.allowedMethods());
 
