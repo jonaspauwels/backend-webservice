@@ -5,7 +5,7 @@ const getAll = () => {
   };
   
   const getById = (id) => {
-    throw new Error('Not implemented yet!');
+    return FRUITSOORTEN.find((f)=> f.id === id);
   };
   
   const create = ({ naam, variëteit, prijsper100kg, oogstplaats }) => {

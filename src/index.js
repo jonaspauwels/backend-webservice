@@ -34,6 +34,12 @@ router.post('/api/transactions', async (ctx) => {
   ctx.body = newTransaction;
 })
 
+router.get('/api/transactions/:id', async (ctx) => {
+  ctx.body = transactionService.getById(Number(ctx.params.id))
+});
+
+
+
 app.use(router.routes())
   .use(router.allowedMethods());
 
