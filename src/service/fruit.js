@@ -19,7 +19,7 @@ const getAll = () => {
 
     const maxId = Math.max(...FRUITSOORTEN.map((f)=>f.id));
 
-    const newTransaction = {
+    const newFruit= {
         id: maxId+1,
         naam,
         variëteit,
@@ -27,8 +27,8 @@ const getAll = () => {
         oogstplaats,
     };
 
-    FRUITSOORTEN.push(newTransaction);
-    return newTransaction;
+    FRUITSOORTEN.push(newFruit);
+    return newFruit;
   };
   
   const updateById = (id, { naam, variëteit, prijsper100kg, oogstplaats }) => {
