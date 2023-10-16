@@ -35,10 +35,19 @@ router.post('/api/transactions', async (ctx) => {
 })
 
 router.get('/api/transactions/:id', async (ctx) => {
-  ctx.body = transactionService.getById(Number(ctx.params.id))
+  ctx.body = transactionService.getById(Number(ctx.params.id));
 });
 
+router.put('/api/transactions/:id', async (ctx) => {
+  const updatedTransaction = transactionService.updateById(Number(ctx.params.id),
+  {...ctx.request.body});
+  ctx.body = updatedTransaction;
+});
 
+router.delete('/api/transactions/:id', async (ctx) => {
+  const deletedTransaction = transactionService.deleteById(Number(ctx.params.id));
+  ctx.body = deletedTransaction;
+});
 
 app.use(router.routes())
   .use(router.allowedMethods());

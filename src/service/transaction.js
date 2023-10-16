@@ -24,7 +24,7 @@ const getAll = () => {
         naam,
         variëteit,
         prijsper100kg,
-        oogstplaats: bestaandeOogstplaats,
+        oogstplaats,
     };
 
     FRUITSOORTEN.push(newTransaction);
@@ -32,12 +32,25 @@ const getAll = () => {
   };
   
   const updateById = (id, { naam, variëteit, prijsper100kg, oogstplaats }) => {
-    throw new Error('Not implemented yet!');
-  };
+    let teUpdatenFruitsoort = FRUITSOORTEN.find((f)=> f.id===id);
+    console.log(teUpdatenFruitsoort)
+    if (!teUpdatenFruitsoort)
+      throw new Error(`Fruitsoort met id ${id} bestaat niet.`);
+    teUpdatenFruitsoort.naam = naam;
+    teUpdatenFruitsoort.variëteit = variëteit;
+    teUpdatenFruitsoort.prijsper100kg = prijsper100kg;
+    teUpdatenFruitsoort.oogstplaats = oogstplaats;
+    return teUpdatenFruitsoort;
+};
   
-  const deleteById = (id) => {
-    throw new Error('Not implemented yet!');
-  };
+const deleteById = (id) => {
+  const teDeletenFruitsoort = FRUITSOORTEN.find((f)=> f.id===id);
+  if (!teDeletenFruitsoort)
+    throw new Error(`Fruitsoort met id ${id} bestaat niet.`);
+  const index = FRUITSOORTEN.indexOf(teDeletenFruitsoort)
+  return FRUITSOORTEN.splice(index, 1)
+
+};
   
   module.exports = {
     getAll,

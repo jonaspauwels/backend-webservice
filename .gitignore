@@ -124,3 +124,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# testfiles
+
+test.html
+test.js
