@@ -13,7 +13,7 @@ module.exports = {
       port: 3306,
       name: 'fruit',
       username: 'root',
-      password: '',
+      
     },
   };
   
