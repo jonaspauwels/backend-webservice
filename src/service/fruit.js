@@ -1,7 +1,12 @@
 let { FRUITSOORTEN, OOGSTPLAATSEN } = require('../data/mock_data');
+const fruitRepo = require('../repository/fruit');
 
-const getAll = () => {
-    return { items: FRUITSOORTEN, count: FRUITSOORTEN.length };
+const getAll = async () => {
+    const items = await fruitRepo.findAll();
+    return {
+      items,
+      count: items.count,
+    };
   };
   
   const getById = (id) => {

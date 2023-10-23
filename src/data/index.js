@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize');
+const {Sequelize, DataTypes} = require('sequelize');
 const { getLogger } = require('../core/logging');
-const { initializeModel } = require('./model');
+const { initializeModel, fruitsoort } = require('./model');
 
 const config = require('config');
 
@@ -40,27 +40,23 @@ async function initializeData() {
         logger.error('Unable to connect to the database:', error);
       }
 
-    initializeModel(sequelize);
+    
+    initializeModel(sequelize)
 
-    logger.info(sequelize.models.Fruitsoort)
+    
+
     return sequelize;
-}
+};
+
+
 
 function getSequelize() {
     if (!sequelize)
         throw new Error('Data is not initialized')
     return sequelize;
-}
-
-const tables = Object.freeze({
-    fruitsoort: 'fruitsoorten',
-    oogstplaats: 'oogstplaatsen',
-    koelcel: 'koelcellen',
-    product: 'producten',
-});
+};
 
 module.exports = {
     initializeData,
     getSequelize,
-    tables,
-}
+};

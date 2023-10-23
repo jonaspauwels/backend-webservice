@@ -1,7 +1,14 @@
-const { DataTypes } = require('sequelize')
+const { DataTypes}  = require('sequelize');
 
-const initializeModel = (sequelize) => {
-    const fruitsoort = sequelize.define('Fruitsoort', {
+
+
+const initializeModel = async (sequelize) => {
+    sequelize.define('Fruitsoort', {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement:true,
+            primaryKey:true
+        },
         naam: {
             type: DataTypes.STRING,
             allowNull:false
@@ -16,11 +23,21 @@ const initializeModel = (sequelize) => {
         },
         oogstplaats: {
             type: DataTypes.INTEGER,
-            allowNull:false
-        }
+            allowNull:false,
+            references: {
+                model: 'Oogstplaats',
+                key: 'id'
+            }
+        },
+        
     })
 
-    oogstplaats = sequelize.define('Oogstplaats',{
+    sequelize.define('Oogstplaats',{
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement:true,
+            primaryKey:true
+        },
         naam: {
             type: DataTypes.STRING,
             allowNull:false
@@ -35,14 +52,14 @@ const initializeModel = (sequelize) => {
         }
     })
 
-    const koelcel = sequelize.define('Koelcel', {
+    sequelize.define('Koelcel', {
         capaciteit: {
             type: DataTypes.FLOAT,
             allowNull: false
         }
     })
 
-    const product = sequelize.define('Product', {
+    sequelize.define('Product', {
         naam : {
             type:DataTypes.STRING,
             allowNull: false
@@ -53,7 +70,9 @@ const initializeModel = (sequelize) => {
         }
     })
 
-    
+    return sequelize;
+    //TODO: check if this is necessary!!
+    //await sequelize.sync({ alter: true })
 }
 
 

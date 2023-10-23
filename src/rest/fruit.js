@@ -2,11 +2,12 @@ const Router = require('@koa/router');
 const fruitService = require('../service/fruit');
 
 const getAllFruitsoorten = async (ctx) => {
-    ctx.body = fruitService.getAll();
+  const places = await fruitService.getAll();  
+  ctx.body = places;
   };
   
 const createFruitsoort =  async (ctx) => {
-    const newFruit = transactionService.create({
+    const newFruit = fruitService.create({
       ...ctx.request.body
     });
     ctx.body = newFruit;
