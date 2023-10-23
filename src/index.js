@@ -5,6 +5,7 @@ const bodyParser = require('koa-bodyparser');
 const installRest = require('./rest');
 const { initializeLogger, getLogger } = require('./core/logging');
 const koaCors = require('@koa/cors');
+const { initializeData } = require('./data');
 
 const NODE_ENV = config.get('env');
 const LOG_LEVEL = config.get('log.level');
@@ -12,13 +13,17 @@ const LOG_DISABLED = config.get('log.disabled');
 const CORS_ORIGINS = config.get('cors.origins');
 const CORS_MAX_AGE = config.get('cors.maxAge');
 
-initializeLogger({
+async function main() {
+
+  initializeLogger({
   level: LOG_LEVEL,
   disabled: LOG_DISABLED,
   defaultMeta: {
     NODE_ENV,
   },
 })
+
+await initializeData();
 
 const app = new Koa();
 
@@ -41,3 +46,7 @@ installRest(app);
 app.listen(9000, () => {
     getLogger().info('server opgestart')
 });
+
+}
+
+main();
