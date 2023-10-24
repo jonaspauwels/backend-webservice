@@ -2,12 +2,13 @@ const Router = require('@koa/router');
 const fruitService = require('../service/fruit');
 
 const getAllFruitsoorten = async (ctx) => {
-  const places = await fruitService.getAll();  
-  ctx.body = places;
+  const fruit = await fruitService.getAll();  
+  ctx.body = fruit;
   };
   
 const createFruitsoort =  async (ctx) => {
-    const newFruit = fruitService.create({
+  
+    const newFruit = await fruitService.create({
       ...ctx.request.body
     });
     ctx.body = newFruit;
@@ -23,7 +24,7 @@ const updateFruitsoort = async (ctx) => {
   };
   
 const deleteFruitsoort = async (ctx) => {
-    const deletedFruitsoort = fruitService.deleteById(Number(ctx.params.id));
+    fruitService.deleteById(Number(ctx.params.id));
     ctx.body = 204;
   };
 /**
