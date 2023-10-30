@@ -3,10 +3,9 @@ const { getSequelize } = require("./index");
 
 
 const findAll = async()=> {
-    return await getSequelize().models.Oogstplaats.findAll({
+    return await getSequelize().models.Oogstplaats.findAndCountAll({
         attributes: { exclude: ['createdAt', 'updatedAt'] }
     });
-    
      
 }
 
@@ -43,9 +42,18 @@ const updateById = async( id, naam, breedtegraad, lengtegraad, oppervlakte) => {
     return updatedItem;
 }
 
+const deleteById = async (id) => {
+    await getSequelize().models.Oogstplaats.destroy({
+        where:{
+            id: id
+        }
+    })
+}
+
  module.exports = {
      findAll,
      create,
      findById,
      updateById,
+     deleteById,
  };

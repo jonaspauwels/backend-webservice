@@ -25,7 +25,7 @@ const updateOogstplaats = async (ctx) => {
   };
   
 const deleteOogstplaats = async (ctx) => {
-    fruitService.deleteById(Number(ctx.params.id));
+    oogstService.deleteById(Number(ctx.params.id));
     ctx.body = 204;
   };
 /**
