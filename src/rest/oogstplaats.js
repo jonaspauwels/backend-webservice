@@ -2,20 +2,21 @@ const Router = require('@koa/router');
 const oogstService = require('../service/oogstplaats');
 
 const getAllOogstplaatsen = async (ctx) => {
-  const oogstplaatsen = await oogstService.getAll();  
-  ctx.body = oogstplaatsen;
+  ctx.body = await oogstService.getAll();  
   };
   
 const createOogstplaats =  async (ctx) => {
-  
+    console.log(ctx.request.body)
     const newOogstplaats = await oogstService.create({
       ...ctx.request.body
     });
+    
     ctx.body = newOogstplaats;
   };
 
 const getOogstplaatsById = async (ctx) => {
-    ctx.body = oogstService.getById(Number(ctx.params.id));
+    ctx.body = await oogstService.getById(Number(ctx.params.id));
+   
   };
   
 const updateOogstplaats = async (ctx) => {

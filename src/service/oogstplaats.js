@@ -1,21 +1,29 @@
-const oogstRepo = require('../repository/oogstplaats');
+const oogstData = require('../data/oogstplaats');
 
 const getAll = async () => {
-    const items = await oogstRepo.findAll();
+    const items = await oogstData.findAll();
     return {
       items,
-      count: items.count,
+      count: items.length,
     };
   };
 
-  const create = async({ naam, breedtegraad, lengtegraad }) => {
+  const getById = async (id) => {
+    return await oogstData.findById(id)
     
-    const nieuweOogstplaats = await oogstRepo.create(naam, breedtegraad, lengtegraad)
+  }
 
-    return nieuweOogstplaats;
+  const create = async({ naam, breedtegraad, lengtegraad, oppervlakteInHectaren }) => {
+    return await oogstData.create(naam, breedtegraad, lengtegraad, oppervlakteInHectaren)
   };
+
+  const updateById = async(id, {naam, breedtegraad, lengtegraad, oppervlakteInHectaren} ) => {
+    return await oogstData.updateById(id,naam,breedtegraad,lengtegraad,oppervlakteInHectaren);
+  }
 
   module.exports = {
     getAll,
     create,
+    getById,
+    updateById,
   }

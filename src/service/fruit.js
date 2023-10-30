@@ -1,8 +1,8 @@
 let { FRUITSOORTEN, OOGSTPLAATSEN } = require('../data/mock_data');
-const fruitRepo = require('../repository/fruit');
+const fruitData = require('../data/fruit');
 
 const getAll = async () => {
-    const items = await fruitRepo.findAll();
+    const items = await fruitData.findAll();
     return {
       items,
       count: items.count,
@@ -15,7 +15,7 @@ const getAll = async () => {
   
   const create = async({ naam, variëteit, prijsper100kg, oogstplaats }) => {
     
-    const newFruit = await fruitRepo.create(naam, variëteit,prijsper100kg,oogstplaats)
+    const newFruit = await fruitData.create(naam, variëteit,prijsper100kg,oogstplaats)
     // let bestaandeOogstplaats;
     // if (oogstplaats) {
     //     bestaandeOogstplaats = OOGSTPLAATSEN.find((o)=> o.id === oogstplaats);

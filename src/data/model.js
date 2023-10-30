@@ -31,7 +31,8 @@ const initializeModel = async (sequelize) => {
         id: {type: DataTypes.INTEGER, autoIncrement:true, primaryKey:true},
         naam: {type: DataTypes.STRING, allowNull:false},
         breedtegraad: {type: DataTypes.FLOAT, allowNull: false},
-        lengtegraad: {type: DataTypes.FLOAT, allowNull:false}
+        lengtegraad: {type: DataTypes.FLOAT, allowNull:false},
+        oppervlakteInHectaren: {type: DataTypes.FLOAT, allowNull:false}
     });
 
     
@@ -60,7 +61,7 @@ const initializeModel = async (sequelize) => {
 
     //TODO: check if this is necessary!!
     //synchronizeren met database
-    await sequelize.sync({ alter: true })
+    //await sequelize.sync({ alter: true })
     return sequelize;
     
     
