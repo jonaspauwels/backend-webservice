@@ -1,4 +1,3 @@
-const oogstplaats = require("../rest/oogstplaats");
 const { getSequelize } = require("./index");
 
 

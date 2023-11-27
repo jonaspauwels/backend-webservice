@@ -34,6 +34,7 @@ async function initializeData() {
     logger.info('Creating Database if not exists');
     const connection = await mysql.createConnection({ host: 'localhost', port: DATABASE_PORT, user: DATABASE_USERNAME, password: DATABASE_PASSWORD });
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DATABASE_NAME}\`;`);
+    connection.close();
 
     sequelize = new Sequelize(sequelizeOptions);
 
@@ -98,9 +99,19 @@ async function initializeData() {
     initializeModel(sequelize);
    
 
+
     return sequelize;
 };
 
+async function shutdownData() {
+    const logger = getLogger();
+
+    logger.info('Shutting down database connection');
+    await sequelize.close();
+    sequelize = null;
+
+    logger.info('Database connection closed');
+}
 
 
 function getSequelize() {
@@ -112,4 +123,5 @@ function getSequelize() {
 module.exports = {
     initializeData,
     getSequelize,
+    shutdownData,
 };
