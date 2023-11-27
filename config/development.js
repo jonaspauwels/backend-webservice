@@ -9,7 +9,7 @@ module.exports = {
     },
     database: {
       client: 'mysql',
-      host: 'WebServicesLocal',
+      host: 'localhost',
       port: 3306,
       name: 'fruit',
       username: 'root',
