@@ -1,5 +1,5 @@
 let { FRUITSOORTEN, OOGSTPLAATSEN } = require('../data/mock_data');
-const fruitData = require('../data/fruit');
+const fruitData = require('../data/fruitsoort');
 
 const getAll = async () => {
     const items = await fruitData.findAll();

@@ -1,5 +1,5 @@
 const Router = require('@koa/router');
-const installFruitRouter = require('./fruit');
+const installFruitRoutes = require('./fruitsoort');
 const installHealthRoutes = require('./health')
 const installOogstplaatsRoutes = require('./oogstplaats')
 
@@ -13,7 +13,7 @@ module.exports = (app) => {
     prefix: '/api',
   });
 
-  installFruitRouter(router);
+  installFruitRoutes(router);
   installHealthRoutes(router);
   installOogstplaatsRoutes(router);
 

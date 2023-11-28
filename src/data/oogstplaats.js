@@ -8,7 +8,7 @@ const findAll = async()=> {
      
 }
 
-const findById = async(id) => {
+const findById = async (id) => {
     return await getSequelize().models.Oogstplaats.findAll({
         attributes: { exclude: ['createdAt', 'updatedAt'] },
         where: {
@@ -17,7 +17,16 @@ const findById = async(id) => {
     })
 }
 
-const create = async( name,breedtegraad, lengtegraad,  oppervlakte ) => {
+const findFruitsoortByOogstplaatsId = async (id) => {
+    return await getSequelize().models.Oogstplaats.findAll({
+        include: {Fruitsoort},
+        where: {
+            id: id
+        }
+    })
+}
+
+const create = async ( name,breedtegraad, lengtegraad,  oppervlakte ) => {
     const item = await getSequelize().models.Oogstplaats.create({
         naam: name, 
         breedtegraad: breedtegraad,
@@ -51,8 +60,9 @@ const deleteById = async (id) => {
 
  module.exports = {
      findAll,
-     create,
      findById,
+     findFruitsoortByOogstplaatsId,
+     create,
      updateById,
      deleteById,
  };

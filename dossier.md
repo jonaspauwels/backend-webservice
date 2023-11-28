@@ -24,7 +24,7 @@ welke oogstplaats in welke koelcel zit en vice versa. Er wordt ook bijgehouden o
 
 ### ERD
 
-![alt text](./ER/../ERD/ERD.svg "ERD schema")
+![ERD](./ER/../ERD/ERD.svg "ERD schema")
 
 ## API calls
 
@@ -34,6 +34,7 @@ welke oogstplaats in welke koelcel zit en vice versa. Er wordt ook bijgehouden o
 
 - `GET /api/oogstplaatsen`: alle oogstplaatsen ophalen
 - `GET /api/oogstplaatsen/:id`: oogstplaats met een bepaald id ophalen
+- `GET /api/oogstplaatsen/:oogstplaatsId/fruitsoorten`: alle fruitsoorten van één oogstplaats ophalen
 - `POST /api/oogstplaatsen` : nieuwe oogstplaats toevoegen
 - `PUT /api/oogstplaatsen/:id`: oogstplaats met bepaald id aanpassen
 - `DELETE /api/oogstplaatsen/:id`: oogstplaats met bepaald id verwijderen
@@ -42,7 +43,10 @@ welke oogstplaats in welke koelcel zit en vice versa. Er wordt ook bijgehouden o
 
 - `GET /api/fruitsoorten`: alle fruitsoorten ophalen
 - `GET /api/fruitsoorten/:id`: fruitsoort met bepaald id ophalen
-- `POST /api/fruitsoorten`: nieuwe fruitsoort toevoegen met hoeveelheid en koelcelid
+- `GET /api/fruitsoorten/:fruitsoortId/koelcellen`: alle koelcellen van één fruitsoort ophalen
+- `POST /api/fruitsoorten`: nieuwe fruitsoort toevoegen met oogstplaats
+- `POST /api/fruitsoorten/:fruitsoortId/koelcellen/:koelcelid`: hoeveelheid toevoegen van fruitsoort in een koelcel
+- `PUT /api/fruitsoorten/:fruitsoortId/koelcellen/:koelcelid`: hoeveelheid aanpassen van fruitsoort in een koelcel
 - `PUT /api/fruitsoorten/:id`: fruitsoort met bepaald id aanpassen
 - `DELETE /api/fruitsoorten/:id`: fruitsoort met bepaald id verwijderen
 
@@ -51,14 +55,17 @@ welke oogstplaats in welke koelcel zit en vice versa. Er wordt ook bijgehouden o
 - `GET /api/koelcellen`: alle koelcellen ophalen
 - `GET /api/koelcellen/:id`: koelcel met bepaald id ophalen
 - `POST /api/koelcellen`: nieuwe koelcel toevoegen
-- `PUT /api/koelcel/:id`: koelcel met bepaald id aanpassen
-- `DELETE /apie/koelcel/:id`: koelcel met bepaald id verwijderen
+- `PUT /api/koelcellen/:id`: koelcel met bepaald id aanpassen
+- `DELETE /api/koelcellen/:id`: koelcel met bepaald id verwijderen
+- `GET /api/koelcellen/:koelcelId/fruitsoorten`: alle fruitsoorten van één koelcel ophalen
 
 ### Product
 
 - `GET /api/producten`: alle producten ophalen
 - `GET /api/producten/:id`: product met bepaald id ophalen
 - `POST /api/producten`: nieuw product toevoegen
+- `POST /api/producten/:productid/koelcellen/:koelcelid`: behandeling toevoegen met productid en koelcelid
+- `POST /api/producten/:productid/koelcellen/:koelcelid`: behandeling wijzigen met productid en koelcelid
 - `PUT /api/producten/:id`: product met bepaald id aanpassen
 - `DELETE /api/producten/:id`: product met bepaald id verwijderen
 

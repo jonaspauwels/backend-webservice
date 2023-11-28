@@ -11,7 +11,10 @@ const getAll = async () => {
 
   const getById = async (id) => {
     return await oogstData.findById(id);
-    
+  }
+
+  const getFruitsoortenByOogstplaatsId = async (id) => {
+    return await oogstData.findFruitsoortByOogstplaatsId(id);
   }
 
   const create = async({ naam, breedtegraad, lengtegraad, oppervlakteInHectaren }) => {
@@ -30,8 +33,9 @@ const getAll = async () => {
 
   module.exports = {
     getAll,
-    create,
     getById,
+    getFruitsoortenByOogstplaatsId,
+    create,
     updateById,
     deleteById,
   }

@@ -87,7 +87,7 @@ describe('Oogstplaatsen', () => {
 
         afterAll(async () => {
             for (id of dataToDelete.transactions) {
-                await getSequelize().models.Oogstplaats.destroy({
+                await sequelize.models.Oogstplaats.destroy({
                     where:{
                         id: id
                     }
@@ -113,7 +113,7 @@ describe('Oogstplaatsen', () => {
         
         afterAll(async () => {
             for (id of transactionsToDelete) {
-                await getSequelize().models.Oogstplaats.destroy({
+                await sequelize.models.Oogstplaats.destroy({
                     where:{
                         id: id
                     }
@@ -147,7 +147,7 @@ describe('Oogstplaatsen', () => {
 
         afterAll(async () => {
             for (id of dataToDelete.transactions) {
-                await getSequelize().models.Oogstplaats.destroy({
+                await sequelize.models.Oogstplaats.destroy({
                     where:{
                         id: id
                     }
@@ -156,7 +156,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 200 and updated oogstplaats', async () => {
-            const response = await request.put(url+'/1').send({id: 1,
+            const response = await request.put(url+'/1').send({
                 naam: 'Beernaarts',
                 breedtegraad: 21.267,
                 lengtegraad: 3.163,
@@ -172,12 +172,15 @@ describe('Oogstplaatsen', () => {
 
     describe('DELETE /api/transactions/:id', () => {
         beforeAll(async () => {
-            await sequelize.models.Oogstplaats.bulkCreate(data.oogstplaatsen);
+            await sequelize.models.Oogstplaats.create({
+                id: 1,
+                naam: 'Leenaerts',
+                breedtegraad: 51.267,
+                lengtegraad: 4.163,
+                oppervlakteInHectaren: 3.72
+            });
         });
 
-        afterAll(async () => {  
-            await getSequelize().models.Oogstplaats.truncate();     
-        });
 
         it('should return 204 and empty body', async () => {
             const response = await request.delete(url+'/1');
