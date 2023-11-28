@@ -2,7 +2,6 @@ const oogstData = require('../data/oogstplaats');
 
 const getAll = async () => {
     const {count, rows} = await oogstData.findAll();
-    console.log(count,rows)
     
     return {
       count,
@@ -20,7 +19,9 @@ const getAll = async () => {
   };
 
   const updateById = async(id, {naam, breedtegraad, lengtegraad, oppervlakteInHectaren} ) => {
-    return await oogstData.updateById(id,naam,breedtegraad,lengtegraad,oppervlakteInHectaren);
+    await oogstData.updateById(id,naam,breedtegraad,lengtegraad,oppervlakteInHectaren);
+    return await getById(id)
+   
   }
 
   const deleteById = async(id) => {

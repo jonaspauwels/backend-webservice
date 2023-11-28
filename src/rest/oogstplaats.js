@@ -1,32 +1,38 @@
 const Router = require('@koa/router');
 const oogstService = require('../service/oogstplaats');
+const Joi = require('joi');
 
 const getAllOogstplaatsen = async (ctx) => {
   ctx.body = await oogstService.getAll();  
   };
   
 const createOogstplaats =  async (ctx) => {
-    console.log(ctx.request.body)
     const newOogstplaats = await oogstService.create({
       ...ctx.request.body
     });
-    
+    ctx.status = 201;
     ctx.body = newOogstplaats;
   };
 
 const getOogstplaatsById = async (ctx) => {
     ctx.body = await oogstService.getById(Number(ctx.params.id));
-   
   };
+
+getOogstplaatsById.validationScheme = {
+  params: Joi.object({
+    id: Joi.number().integer().positive(),
+  }),
+}
   
 const updateOogstplaats = async (ctx) => {
-    ctx.body = oogstService.updateById(Number(ctx.params.id),
-    {...ctx.request.body});
+  ctx.body = await oogstService.updateById(Number(ctx.params.id),
+  {...ctx.request.body});
+    
   };
   
 const deleteOogstplaats = async (ctx) => {
     oogstService.deleteById(Number(ctx.params.id));
-    ctx.body = 204;
+    ctx.status = 204;
   };
 /**
  * Install transaction routes in the given router.

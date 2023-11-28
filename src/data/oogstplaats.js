@@ -24,7 +24,7 @@ const create = async( name,breedtegraad, lengtegraad,  oppervlakte ) => {
         lengtegraad: lengtegraad,
         oppervlakteInHectaren: oppervlakte
     });
-    return item.id;
+    return item;
 }
 
 const updateById = async( id, naam, breedtegraad, lengtegraad, oppervlakte) => {

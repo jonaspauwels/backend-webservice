@@ -38,6 +38,8 @@ async function initializeData() {
 
     sequelize = new Sequelize(sequelizeOptions);
 
+
+
     //connectie leggen via sequelize
     try {
         await sequelize.authenticate();
@@ -94,11 +96,9 @@ async function initializeData() {
                 logger.error('Error occured during seeding');
             }
     }
-        
+   
     //model aanmaken voor sequelize zodat het verder gebruikt kan worden voor CRUD-operaties
     initializeModel(sequelize);
-   
-
 
     return sequelize;
 };
