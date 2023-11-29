@@ -6,15 +6,15 @@ const initializeModel = async (sequelize) => {
     //tabellen aanmaken
     const fruitsoort = sequelize.define('Fruitsoort', {
         id: {type: DataTypes.INTEGER, autoIncrement:true,primaryKey:true},
-        naam: {type: DataTypes.STRING, allowNull:false},
+        naam: {type: DataTypes.STRING, allowNull:false, unique: 'idx_fruit_naam_unique'},
         variëteit: {type: DataTypes.STRING, allowNull:false},
         prijsper100kg:{type: DataTypes.FLOAT, allowNull:true},
-        oogstplaats: {type: DataTypes.INTEGER, allowNull:false,
-            references: {
-                model: 'Oogstplaats',
-                key: 'id'
-            }
-        },
+        //oogstplaats: {type: DataTypes.INTEGER, allowNull:false,
+            // references: {
+            //     model: 'Oogstplaats',
+            //     key: 'id'
+            // }
+        //},
         
     });
     const koelcel = sequelize.define('Koelcel', {
@@ -29,7 +29,7 @@ const initializeModel = async (sequelize) => {
 
     const oogstplaats = sequelize.define('Oogstplaats',{
         id: {type: DataTypes.INTEGER, autoIncrement:true, primaryKey:true},
-        naam: {type: DataTypes.STRING, allowNull:false},
+        naam: {type: DataTypes.STRING, allowNull:false, unique:'idx_oogstplaats_naam_unique'},
         breedtegraad: {type: DataTypes.FLOAT, allowNull: false},
         lengtegraad: {type: DataTypes.FLOAT, allowNull:false},
         oppervlakteInHectaren: {type: DataTypes.FLOAT, allowNull:false}
@@ -45,7 +45,7 @@ const initializeModel = async (sequelize) => {
 
     const product = sequelize.define('Product', {
         id: {type: DataTypes.INTEGER, autoIncrement:true, primaryKey:true},
-        naam : {type:DataTypes.STRING, allowNull: false},
+        naam : {type:DataTypes.STRING, allowNull: false, unique: 'idx_product_naam_unique'},
         beschrijving: {type: DataTypes.STRING, allowNull:false}
     });
 
@@ -63,10 +63,7 @@ const initializeModel = async (sequelize) => {
     //synchronizeren met database
     //await sequelize.sync({ alter: true })
     return sequelize;
-    
-    
 }
-
 
 module.exports = {
     initializeModel,

@@ -16,11 +16,36 @@ const data = {
     lengtegraad: 4.138,
     oppervlakteInHectaren: 10.42
     },
+    ],
+    fruitsoorten: [
+        {
+            id: 1,
+            naam: 'Peer',
+            variëteit: 'Conference',
+            prijsper100kg: 100,
+            OogstplaatId: 1,
+        },
+        {
+            id: 2,
+            naam: 'Peer',
+            variëteit: 'Conference',
+            prijsper100kg: 100,
+            OogstplaatId: 2,
+        },
+        {
+            id: 3,
+            naam: 'Appel',
+            variëteit: 'Elstar',
+            prijsper100kg: 130,
+            OogstplaatId: 2,
+        }
     ]
+
 }
 
 const dataToDelete = {
-    transactions: [1,2],
+    oogstplaatsen: [1,2],
+    fruitsoorten: [1,2,3],
 }
 
 describe('Oogstplaatsen', () => {
@@ -32,6 +57,7 @@ describe('Oogstplaatsen', () => {
         server = await createServer(); 
         request = supertest(server.getApp().callback());
         sequelize = getSequelize();
+
       });
 
     afterAll(async () => {
@@ -47,7 +73,7 @@ describe('Oogstplaatsen', () => {
         });
 
         afterAll(async () => {
-            for (id of dataToDelete.transactions) {
+            for (id of dataToDelete.oogstplaatsen) {
                 await getSequelize().models.Oogstplaats.destroy({
                     where:{
                         id: id
@@ -80,13 +106,13 @@ describe('Oogstplaatsen', () => {
         });
     });
 
-    describe('GET /api/transactions/:id', () => {
+    describe('GET /api/oogstplaatsen/:id', () => {
         beforeAll(async () => {
             await sequelize.models.Oogstplaats.bulkCreate(data.oogstplaatsen);
         });
 
         afterAll(async () => {
-            for (id of dataToDelete.transactions) {
+            for (id of dataToDelete.oogstplaatsen) {
                 await sequelize.models.Oogstplaats.destroy({
                     where:{
                         id: id
@@ -98,7 +124,7 @@ describe('Oogstplaatsen', () => {
         it('should return 200 and all oogstplaatsen', async () => {
             const response = await request.get(url+'/1')
             expect(response.status).toBe(200);
-            expect(response.body[0]).toEqual({
+            expect(response.body).toEqual({
                 id: 1,
                 naam: 'Leenaerts',
                 breedtegraad: 51.267,
@@ -108,11 +134,45 @@ describe('Oogstplaatsen', () => {
         });
     })
 
-    describe('POST /api/transactions', () => {
-        const transactionsToDelete = [];
+    // TODO als fruitsoort klaar is
+    describe('GET /api/oogstplaatsen/:oogstplaatsId/fruitsoorten', () => {
+        beforeAll(async () => {
+            await sequelize.models.Oogstplaats.bulkCreate(data.oogstplaatsen);
+            await sequelize.models.Fruitsoort.bulkCreate(data.fruitsoorten);
+        });
+
+         afterAll(async () => {
+            for (id of dataToDelete.oogstplaatsen) {
+                await sequelize.models.Oogstplaats.destroy({
+                    where:{
+                        id: id
+                    }
+                });
+            };  
+            for (id of dataToDelete.fruitsoorten) {
+                await sequelize.models.Fruitsoort.destroy({
+                    where:{
+                        id: id
+                    }
+                });
+            };  
+        })
+
+        it('should return 200 and all fruitsoorten by oogstplaatsId', async () => {
+            const response = await request.get(url+'/2/fruitsoorten')
+            expect(response.status).toBe(200);
+            expect(response.body.Fruitsoorts[0].id).toBe(2);
+            expect(response.body.Fruitsoorts[0].naam).toBe('Peer')
+            expect(response.body.Fruitsoorts[0].prijsper100kg).toBe(100)
+        })
+
+    })
+
+    describe('POST /api/oogstplaatsen', () => {
+        const oogstplaatsenToDelete = [];
         
         afterAll(async () => {
-            for (id of transactionsToDelete) {
+            for (id of oogstplaatsenToDelete) {
                 await sequelize.models.Oogstplaats.destroy({
                     where:{
                         id: id
@@ -136,17 +196,17 @@ describe('Oogstplaatsen', () => {
             expect(response.body.lengtegraad).toBe(41.63);
             expect(response.body.oppervlakteInHectaren).toBe(37.2);
 
-            transactionsToDelete.push(response.body.id);
+            oogstplaatsenToDelete.push(response.body.id);
         })    
     })
 
-    describe('PUT /api/transactions/:id', () => {
+    describe('PUT /api/oogstplaatsen/:id', () => {
         beforeAll(async () => {
             await sequelize.models.Oogstplaats.bulkCreate(data.oogstplaatsen);
         });
 
         afterAll(async () => {
-            for (id of dataToDelete.transactions) {
+            for (id of dataToDelete.oogstplaatsen) {
                 await sequelize.models.Oogstplaats.destroy({
                     where:{
                         id: id
@@ -163,14 +223,14 @@ describe('Oogstplaatsen', () => {
                 oppervlakteInHectaren: 5})
             
             expect(response.status).toBe(200);
-            expect(response.body[0].naam).toBe('Beernaarts');
-            expect(response.body[0].breedtegraad).toBe(21.267);
-            expect(response.body[0].lengtegraad).toBe(3.163);
-            expect(response.body[0].oppervlakteInHectaren).toBe(5);
+            expect(response.body.naam).toBe('Beernaarts');
+            expect(response.body.breedtegraad).toBe(21.267);
+            expect(response.body.lengtegraad).toBe(3.163);
+            expect(response.body.oppervlakteInHectaren).toBe(5);
         });
     })
 
-    describe('DELETE /api/transactions/:id', () => {
+    describe('DELETE /api/oogstplaatsen:id', () => {
         beforeAll(async () => {
             await sequelize.models.Oogstplaats.create({
                 id: 1,
@@ -184,7 +244,6 @@ describe('Oogstplaatsen', () => {
 
         it('should return 204 and empty body', async () => {
             const response = await request.delete(url+'/1');
-            console.log(response.body[0])
             expect(response.status).toBe(204);
             expect(response.body[0]).toBe(undefined);
         })

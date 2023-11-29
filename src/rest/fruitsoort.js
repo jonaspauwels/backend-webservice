@@ -1,22 +1,38 @@
 const Router = require('@koa/router');
 const fruitService = require('../service/fruitsoort');
+const Joi = require('joi');
+const validate = require('../core/validation');
+
 
 const getAllFruitsoorten = async (ctx) => {
   ctx.body = await fruitService.getAll();  
+};
+
+getAllFruitsoorten.validationScheme = null
+
+const getFruitsoortById = async (ctx) => {
+  ctx.body = fruitService.getById(Number(ctx.params.id));
+};
+
+getFruitsoortById.validationScheme = {
+  params: Joi.object({
+    id: Joi.number().integer().positive(),
+  }),
+};
   
-  };
-  
+const getKoelcellenByFruitsoortId = async (ctx) => {
+  ctx.body = fruitService.getKoelcellenByFruitsoortId()
+}
+
 const createFruitsoort =  async (ctx) => {
-  
     const newFruit = await fruitService.create({
       ...ctx.request.body
     });
+    
     ctx.body = newFruit;
   };
 
-const getFruitsoortById = async (ctx) => {
-    ctx.body = fruitService.getById(Number(ctx.params.id));
-  };
+
   
 const updateFruitsoort = async (ctx) => {
     ctx.body = fruitService.updateById(Number(ctx.params.id),

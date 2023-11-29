@@ -1,68 +1,101 @@
-let { FRUITSOORTEN, OOGSTPLAATSEN } = require('../data/mock_data');
 const fruitData = require('../data/fruitsoort');
+const oogstplaatsService = require('./oogstplaats')
+const koelcelService = require('./koelcel')
 
 const getAll = async () => {
-    const items = await fruitData.findAll();
+    const { count, rows } = await fruitData.findAll();
+    
     return {
-      items,
-      count: items.count,
+      count,
+      rows,
     };
   };
   
-  const getById = (id) => {
-    return FRUITSOORTEN.find((f)=> f.id === id);
+  const getById = async (id) => {
+    const fruitsoort = await fruitData.findById(id);
+
+    if (!fruitsoort){
+      throw Error(`No fruitsoort with id ${id} exists`, { id });
+    }
+    return fruitsoort;
   };
+
+  const getKoelcellenByFruitsoortId = async (id) => {
+    const koelcellen = await fruitData.findKoelcellenByFruitsoortId(id);
+
+    if (!koelcellen){
+      throw Error(`No fruitsoort with id ${id} exists`, { id });
+    }
+    return koelcellen;
+  }
   
-  const create = async({ naam, variëteit, prijsper100kg, oogstplaats }) => {
-    
-    const newFruit = await fruitData.create(naam, variëteit,prijsper100kg,oogstplaats)
-    // let bestaandeOogstplaats;
-    // if (oogstplaats) {
-    //     bestaandeOogstplaats = OOGSTPLAATSEN.find((o)=> o.id === oogstplaats);
-    //     if (!bestaandeOogstplaats) {
-    //         throw new Error(`oogstplaats met id ${oogstplaats} bestaat niet.`)
-    //     }
-    // };
+  const create = async({ naam, variëteit, prijsper100kg, oogstplaatId }) => {
+    console.log(oogstplaatId)
+    const bestaandeOogstplaats =  oogstplaatsService.getById(oogstplaatId)
 
-    // const maxId = Math.max(...FRUITSOORTEN.map((f)=>f.id));
+    if (!bestaandeOogstplaats) {
+      throw Error(`No oogstplaats with id ${oogstplaatId} exists`, { oogstplaatId });
+    }
+    return await fruitData.create(naam, variëteit,prijsper100kg,oogstplaatId)
 
-    // const newFruit= {
-    //     id: maxId+1,
-    //     naam,
-    //     variëteit,
-    //     prijsper100kg,
-    //     oogstplaats,
-    // };
-
-    // FRUITSOORTEN.push(newFruit);
-    return newFruit;
   };
+
+  const createHoeveelheid = async ({ fruitId, koelcelId, hoeveelheid }) => {
+    const bestaandeFruitsoort = getById(fruitId);
+    const bestaandeKoelcel = koelcelService.getById(koelcelId);
+
+    if (!bestaandeFruitsoort) {
+      throw Error(`No fruitsoort with id ${fruitId} exists`, { fruitId });
+    }
+    if (!bestaandeKoelcel) {
+      throw Error(`No koelcel with id ${koelcelId} exists`, { koelcelId });
+    }
+
+    return await fruitData.createHoeveelheid( fruitId, koelcelId, hoeveelheid)
+
+  }
+
+  const updateHoeveelheid = async ({ fruitId, koelcelId, hoeveelheid }) => {
+    const bestaandeFruitsoort = getById(fruitId);
+    const bestaandeKoelcel = koelcelService.getById(koelcelId);
+
+    if (!bestaandeFruitsoort) {
+      throw Error(`No fruitsoort with id ${fruitId} exists`, { fruitId });
+    }
+    if (!bestaandeKoelcel) {
+      throw Error(`No koelcel with id ${koelcelId} exists`, { koelcelId });
+    }
+
+    return await fruitData.updateHoeveelheid( fruitId, koelcelId, hoeveelheid)
+  }
   
-  const updateById = (id, { naam, variëteit, prijsper100kg, oogstplaats }) => {
-    let teUpdatenFruitsoort = FRUITSOORTEN.find((f)=> f.id===id);
-    console.log(teUpdatenFruitsoort)
-    if (!teUpdatenFruitsoort)
-      throw new Error(`Fruitsoort met id ${id} bestaat niet.`);
-    teUpdatenFruitsoort.naam = naam;
-    teUpdatenFruitsoort.variëteit = variëteit;
-    teUpdatenFruitsoort.prijsper100kg = prijsper100kg;
-    teUpdatenFruitsoort.oogstplaats = oogstplaats;
-    return teUpdatenFruitsoort;
+  const updateById = async (id, { naam, variëteit, prijsper100kg, oogstplaatsId }) => {
+   if (oogstplaatsId) {
+    const bestaandeOogstplaats = await oogstplaatsService.getById(oogstplaatsId);
+
+    if (!bestaandeOogstplaats) {
+      throw Error(`No oogstplaats with id ${oogstplaatsId} exists`, { oogstplaatsId });
+    }
+   }
+
+   await fruitData.updateById(id, naam, variëteit, prijsper100kg, oogstplaatsId)
+   return await getById(id)
 };
   
-const deleteById = (id) => {
-  const teDeletenFruitsoort = FRUITSOORTEN.find((f)=> f.id===id);
-  if (!teDeletenFruitsoort)
-    throw new Error(`Fruitsoort met id ${id} bestaat niet.`);
-  const index = FRUITSOORTEN.indexOf(teDeletenFruitsoort)
-  return FRUITSOORTEN.splice(index, 1)
-
+const deleteById = async (id) => {
+  const deleted = await fruitData.deleteById(id);
+  if (!deleted>0){
+    throw Error(`No fruitsoort with id ${fruitId} exists`, { fruitId });
+  }
 };
   
   module.exports = {
     getAll,
     getById,
+    getKoelcellenByFruitsoortId,
     create,
+    createHoeveelheid,
+    updateHoeveelheid,
     updateById,
     deleteById,
   };

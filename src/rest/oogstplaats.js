@@ -17,15 +17,15 @@ getOogstplaatsById.validationScheme = {
 params: Joi.object({
   id: Joi.number().integer().positive(),
 }),
-}
+};
 
-getFruitsoortenByOogstplaatsId = async (ctx) => {
-  ctx.body = await oogstService.getFruitsoortenByOogstplaatsId(ctx.params.id);
+const getFruitsoortenByOogstplaatsId = async (ctx) => {
+  ctx.body = await oogstService.getFruitsoortenByOogstplaatsId(ctx.params.oogstplaatsid);
 }
 
 getFruitsoortenByOogstplaatsId.validationScheme = {
   params: Joi.object({
-    id: Joi.number().integer().positive(),
+    oogstplaatsid: Joi.number().integer().positive(),
   }),
   }
 
@@ -64,7 +64,7 @@ updateOogstplaats.validationScheme = {
   },
 };
 const deleteOogstplaats = async (ctx) => {
-    oogstService.deleteById(Number(ctx.params.id));
+    oogstService.deleteById(ctx.params.id);
     ctx.status = 204;
   };
 
