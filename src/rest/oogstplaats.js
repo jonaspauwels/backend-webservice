@@ -30,11 +30,10 @@ getFruitsoortenByOogstplaatsId.validationScheme = {
   }
 
 const createOogstplaats =  async (ctx) => {
-    const newOogstplaats = await oogstService.create({
+  ctx.body = await oogstService.create({
       ...ctx.request.body
     });
     ctx.status = 201;
-    ctx.body = newOogstplaats;
   };
 
 createOogstplaats.validationScheme = {

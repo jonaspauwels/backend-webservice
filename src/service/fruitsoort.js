@@ -1,18 +1,23 @@
-const fruitData = require('../data/fruitsoort');
+const { getSequelize } = require("./index");
+const { getLogger } = require("../core/logging")
 const oogstplaatsService = require('./oogstplaats')
 const koelcelService = require('./koelcel')
 
 const getAll = async () => {
-    const { count, rows } = await fruitData.findAll();
+    const { count, rows } = await getSequelize().models.Fruitsoort.findAndCountAll({
+      attributes: { exclude: ['createdAt', 'updatedAt'] }
+   });
     
-    return {
-      count,
-      rows,
-    };
+    return {count,rows,};
   };
   
   const getById = async (id) => {
-    const fruitsoort = await fruitData.findById(id);
+    const fruitsoort = await getSequelize().models.Fruitsoort.findAll({
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      where: {
+          id: id
+      }
+  });
 
     if (!fruitsoort){
       throw Error(`No fruitsoort with id ${id} exists`, { id });
@@ -21,7 +26,12 @@ const getAll = async () => {
   };
 
   const getKoelcellenByFruitsoortId = async (id) => {
-    const koelcellen = await fruitData.findKoelcellenByFruitsoortId(id);
+    const koelcellen = await getSequelize().models.Oogstplaats.findAll({
+      include: getSequelize().models.Koelcel,
+      where: {
+          id: id
+      }
+  });
 
     if (!koelcellen){
       throw Error(`No fruitsoort with id ${id} exists`, { id });
@@ -29,18 +39,31 @@ const getAll = async () => {
     return koelcellen;
   }
   
-  const create = async({ naam, variëteit, prijsper100kg, oogstplaatId }) => {
-    console.log(oogstplaatId)
-    const bestaandeOogstplaats =  oogstplaatsService.getById(oogstplaatId)
+  const create = async({ naam, variëteit, prijsper100kg, OogstplaatId }) => {
+  
+    const bestaandeOogstplaats =  oogstplaatsService.getById(OogstplaatId)
 
     if (!bestaandeOogstplaats) {
-      throw Error(`No oogstplaats with id ${oogstplaatId} exists`, { oogstplaatId });
+      throw Error(`No oogstplaats with id ${OogstplaatId} exists`, { OogstplaatId });
     }
-    return await fruitData.create(naam, variëteit,prijsper100kg,oogstplaatId)
+
+    try {
+      const fruitsoort = await getSequelize().models.Fruitsoort.create({
+          naam, 
+          variëteit,
+          prijsper100kg,
+          OogstplaatId,
+      });
+      return fruitsoort;
+      } catch (error) {
+          getLogger().error('Error during create', { error, });
+          throw error;
+      }
+    
 
   };
 
-  const createHoeveelheid = async ({ fruitId, koelcelId, hoeveelheid }) => {
+  const createHoeveelheid = async (fruitId, koelcelId, { hoeveelheid }) => {
     const bestaandeFruitsoort = getById(fruitId);
     const bestaandeKoelcel = koelcelService.getById(koelcelId);
 
@@ -51,11 +74,22 @@ const getAll = async () => {
       throw Error(`No koelcel with id ${koelcelId} exists`, { koelcelId });
     }
 
-    return await fruitData.createHoeveelheid( fruitId, koelcelId, hoeveelheid)
+    try {
+      const nieuweHoeveelheid = await getSequelize().models.HoeveelheidPerKoelcel.create({
+          FruitsoortId: fruitId,
+          KoelcelId: koelcelId,
+          hoeveelheid,
+      });
+      return nieuweHoeveelheid;
+      } catch (error) {
+          getLogger().error('Error during createHoeveelheid', { error, });
+          throw error;
+      }
+
 
   }
 
-  const updateHoeveelheid = async ({ fruitId, koelcelId, hoeveelheid }) => {
+  const updateHoeveelheid = async ( fruitId, koelcelId, { hoeveelheid }) => {
     const bestaandeFruitsoort = getById(fruitId);
     const bestaandeKoelcel = koelcelService.getById(koelcelId);
 
@@ -66,27 +100,63 @@ const getAll = async () => {
       throw Error(`No koelcel with id ${koelcelId} exists`, { koelcelId });
     }
 
-    return await fruitData.updateHoeveelheid( fruitId, koelcelId, hoeveelheid)
-  }
+    try {
+      const aangepasteHoeveelheid = await getSequelize().models.HoeveelheidPerKoelcel.update({
+          hoeveelheid,
+          },{
+              where: {
+                  FruitsoortId: fruitId,
+                  KoelcelId: koelcelId
+              }
+          });
+      return aangepasteHoeveelheid;
+      } catch (error) {
+          getLogger().error('Error during updateHoeveelheid', { error, });
+          throw error;
+      }
+  };
   
-  const updateById = async (id, { naam, variëteit, prijsper100kg, oogstplaatsId }) => {
-   if (oogstplaatsId) {
-    const bestaandeOogstplaats = await oogstplaatsService.getById(oogstplaatsId);
+  const updateById = async (id, { naam, variëteit, prijsper100kg, OogstplaatId }) => {
+   if (OogstplaatId) {
+    const bestaandeOogstplaats = await oogstplaatsService.getById(OogstplaatId);
 
     if (!bestaandeOogstplaats) {
-      throw Error(`No oogstplaats with id ${oogstplaatsId} exists`, { oogstplaatsId });
+      throw Error(`No oogstplaats with id ${OogstplaatId} exists`, { OogstplaatId });
     }
-   }
+  }
 
-   await fruitData.updateById(id, naam, variëteit, prijsper100kg, oogstplaatsId)
-   return await getById(id)
+  try {
+    await getSequelize().models.Fruitsoort.update({
+        naam, 
+        variëteit,
+        prijsper100kg,
+        OogstplaatId,
+    },{
+        where: {
+            id:id
+        }
+    });
+    return getById(id);
+    } catch (error){
+        getLogger().error('Error during updateById', { error, });
+        throw error;
+    }
 };
   
 const deleteById = async (id) => {
-  const deleted = await fruitData.deleteById(id);
-  if (!deleted>0){
-    throw Error(`No fruitsoort with id ${fruitId} exists`, { fruitId });
-  }
+  try {
+    const rowsDeleted = await getSequelize().models.Fruitsoort.destroy({
+        where: {
+            id: id
+        }
+    })
+    if (!rowsDeleted>0){
+      throw Error(`No fruitsoort with id ${fruitId} exists`, { fruitId });
+    }
+    } catch (error) {
+        getLogger().error('Error during deleteById', { error, });
+        throw error;
+    } 
 };
   
   module.exports = {
