@@ -130,7 +130,7 @@ describe('Fruitsoorten', () => {
         it('should return 200 and all fruitsoorten', async () => {
             const response = await request.get(url);
             expect(response.status).toBe(200);
-            expect(response.body.rows.length).toBe(3);
+            expect(response.body.count).toBe(3);
 
             expect(response.body.rows[0]).toEqual({
                 id: 1,
@@ -174,7 +174,7 @@ describe('Fruitsoorten', () => {
             };  
         });
 
-        it('should return 200 and all oogstplaatsen', async () => {
+        it('should return 200 and requested fruitsoort by id', async () => {
             const response = await request.get(url+'/2')
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
@@ -215,14 +215,14 @@ describe('Fruitsoorten', () => {
                     where:{id:id}
                 })
             }
-        })
+        });
 
         it('should return 200 and all koelcellen by fruitsoortId', async () => {
             const response = await request.get(url+'/2/koelcellen');
             expect(response.status).toBe(200);
             expect(response.body.id).toBe(2);
             expect(response.body.Koelcels[0].id).toBe(2);
-            expect(response.body.Koelcels[0].capaciteit).toBe(500)
+            expect(response.body.Koelcels[0].capaciteit).toBe(500);
 
         });
 
@@ -247,7 +247,7 @@ describe('Fruitsoorten', () => {
             };
         });
 
-        it('should return 201 and created oogstplaats', async () => {
+        it('should return 201 and created fruitsoort', async () => {
             const response = await request.post(url).send({
                 naam: 'Peer',
                 variëteit: 'Conference',

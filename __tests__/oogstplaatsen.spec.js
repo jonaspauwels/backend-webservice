@@ -85,7 +85,7 @@ describe('Oogstplaatsen', () => {
         it('should return 200 and all oogstplaatsen', async () => {
             const response = await request.get(url);
             expect(response.status).toBe(200);
-            expect(response.body.rows.length).toBe(2);
+            expect(response.body.count).toBe(2);
 
             expect(response.body.rows[0]).toEqual({
                 id: 1,
@@ -119,10 +119,10 @@ describe('Oogstplaatsen', () => {
                     }
                 });
             };   
-        })
+        });
 
-        it('should return 200 and all oogstplaatsen', async () => {
-            const response = await request.get(url+'/1')
+        it('should return 200 and requested oogstplaats by id', async () => {
+            const response = await request.get(url+'/1');
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
                 id: 1,

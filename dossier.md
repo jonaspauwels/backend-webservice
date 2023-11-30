@@ -20,15 +20,13 @@
 ### Omschrijving
 
 Het project behandeld een stockbeheersysteem voor koelcellen in de landbouw, meer bepaald voor de fruitsector. Bedoeling is dat de landbouwer kan zien welk fruit van
-welke oogstplaats in welke koelcel zit en vice versa. Er wordt ook bijgehouden of een koelcel behandeld werd met een product. Als laatste worden ook de laatste veilingprijzen hieraan gelinkt.
+welke oogstplaats in welke koelcel zit en vice versa.
 
 ### ERD
 
 ![ERD](./ER/../ERD/ERD.svg "ERD schema")
 
 ## API calls
-
-> Maak hier een oplijsting van alle API cals in jouw applicatie. Groepeer dit per entiteit. Hieronder een voorbeeld.
 
 ### Oogstplaats
 
@@ -58,16 +56,6 @@ welke oogstplaats in welke koelcel zit en vice versa. Er wordt ook bijgehouden o
 - `POST /api/koelcellen`: nieuwe koelcel toevoegen
 - `PUT /api/koelcellen/:id`: koelcel met bepaald id aanpassen
 - `DELETE /api/koelcellen/:id`: koelcel met bepaald id verwijderen
-
-### Product
-
-- `GET /api/producten`: alle producten ophalen
-- `GET /api/producten/:id`: product met bepaald id ophalen
-- `POST /api/producten`: nieuw product toevoegen
-- `POST /api/producten/:productid/koelcellen/:koelcelid`: behandeling toevoegen met productid en koelcelid
-- `POST /api/producten/:productid/koelcellen/:koelcelid`: behandeling wijzigen met productid en koelcelid
-- `PUT /api/producten/:id`: product met bepaald id aanpassen
-- `DELETE /api/producten/:id`: product met bepaald id verwijderen
 
 ## Behaalde minimumvereisten
 

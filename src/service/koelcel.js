@@ -25,14 +25,15 @@ const getById = async (id) => {
   };
 
 const getFruitsoortenByKoelcelId = async (id) => {
-  const [koelcellen] = await getSequelize().models.Koelcel.findAll({
+  const [fruitsoorten] = await getSequelize().models.Koelcel.findAll({
     include: getSequelize().models.Fruitsoort,
     where: {id:id}
   });
 
-  if (!koelcellen) {
+  if (!fruitsoorten) {
     throw Error(`No koelcel with id ${id} exists`, { id });
   }
+  return fruitsoorten;
 };
 
 const create = async ({ capaciteit }) => {

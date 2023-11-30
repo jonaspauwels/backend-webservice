@@ -25,13 +25,13 @@ const getFruitsoortenByKoelcelId = async (ctx) => {
 
 getFruitsoortenByKoelcelId.validationScheme = {
     params: Joi.object({
-        id: Joi.number().integer().positive(),
+        koelcelId: Joi.number().integer().positive(),
       }),
 };
 
 const createKoelcel = async (ctx) => {
     ctx.body = await koelService.create({
-        ...ctx.reques.body
+        ...ctx.request.body
     });
     ctx.status = 201;
 };
