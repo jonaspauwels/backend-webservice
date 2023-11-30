@@ -49,7 +49,7 @@
 <polygon fill="none" stroke="black" points="204.5,-85.75 204.5,-115.25 420,-115.25 420,-85.75 204.5,-85.75"/>
 <text text-anchor="start" x="209.5" y="-96.05" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="16.00">HoeveelheidPerKoelcel</text>
 <polygon fill="none" stroke="black" points="204.5,-58.5 204.5,-85.75 420,-85.75 420,-58.5 204.5,-58.5"/>
-<text text-anchor="start" x="209.5" y="-68.45" font-family="Helvetica,sans-Serif" font-style="italic" text-decoration="underline" font-size="14.00">FruitID</text>
+<text text-anchor="start" x="209.5" y="-68.45" font-family="Helvetica,sans-Serif" font-style="italic" text-decoration="underline" font-size="14.00">FruitsoortID</text>
 <polygon fill="none" stroke="black" points="204.5,-31.25 204.5,-58.5 420,-58.5 420,-31.25 204.5,-31.25"/>
 <text text-anchor="start" x="209.5" y="-41.2" font-family="Helvetica,sans-Serif" font-style="italic" text-decoration="underline" font-size="14.00">KoelcelID</text>
 <polygon fill="none" stroke="black" points="204.5,-4 204.5,-31.25 420,-31.25 420,-4 204.5,-4"/>

@@ -1,5 +1,7 @@
 const { getSequelize } = require("../data");
 const { getLogger } = require("../core/logging");
+const ServiceError = require('../core/serviceError');
+const handleDBError = require('./_handleDBerror');
 
 const getAll = async () => {
   const { count, rows } = await getSequelize().models.Koelcel.findAndCountAll({
@@ -18,9 +20,9 @@ const getById = async (id) => {
     });
 
     if (!koelcel) {
-      throw Error(`No koelcel with id ${id} exists`, { id });
+      throw ServiceError.notFound(`No koelcel with id ${id} exists`, { id });
     }
-
+    
     return koelcel;
   };
 
@@ -31,7 +33,7 @@ const getFruitsoortenByKoelcelId = async (id) => {
   });
 
   if (!fruitsoorten) {
-    throw Error(`No koelcel with id ${id} exists`, { id });
+    throw ServiceError.notFound(`No koelcel with id ${id} exists`, { id });
   }
   return fruitsoorten;
 };
@@ -44,7 +46,7 @@ const create = async ({ capaciteit }) => {
       return koelcel
     } catch (error) {
           getLogger().error('Error during create', { error, });
-          throw error;
+          throw handleDBError(error);
     }
   };
 
@@ -58,7 +60,7 @@ const updateById = async (id, { capaciteit }) => {
     return await getById(id);
   } catch (error) {
     getLogger().error('Error during updateBy', { error, });
-          throw error;
+          throw handleDBError(error);
   }
 };
 
@@ -68,11 +70,11 @@ const deleteById = async(id) => {
       where:{id: id}
     })
     if (!rowsDeleted>0){
-      throw Error(`No koelcel with id ${id} exists`, { id })
+      throw ServiceError.notFound(`No koelcel with id ${id} exists`, { id })
     } ;
   } catch (error) {
       getLogger().error('Error during deleteById', { error, });
-      throw error;
+      throw handleDBError(error);
   }
 }
 

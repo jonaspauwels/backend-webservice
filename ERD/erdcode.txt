@@ -15,7 +15,7 @@ geolocatie
 oppervlakteInHectaren
 
 [HoeveelheidPerKoelcel]
-+*FruitID
++*FruitsoortID
 +*KoelcelID
 hoeveelheid
 

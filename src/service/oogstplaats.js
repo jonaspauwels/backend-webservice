@@ -1,11 +1,13 @@
-const { getSequelize } = require("../data");
-const { getLogger } = require("../core/logging");
+const { getSequelize } = require('../data');
+const { getLogger } = require('../core/logging');
+const ServiceError = require('../core/serviceError');
+const handleDBError = require('./_handleDBerror');
+
 
 const getAll = async () => {
     const { count, rows } = await getSequelize().models.Oogstplaats.findAndCountAll({
       attributes: { exclude: ['createdAt', 'updatedAt'] }
       }); 
-    
     
     return {count,rows, };
   };
@@ -17,9 +19,8 @@ const getAll = async () => {
           id: id
       }
     });
-
     if (!oogstplaats) {
-      throw Error(`No oogstplaats with id ${id} exists`, { id });
+      throw ServiceError.notFound(`No oogstplaats with id ${id} exists`, { id });
     }
     return oogstplaats;
   };
@@ -31,7 +32,7 @@ const getAll = async () => {
       })
 
     if (!fruitsoorten) {
-      throw Error(`No oogstplaats with id ${id} exists`, { id });
+      throw ServiceError.notFound(`No oogstplaats with id ${id} exists`, { id });
      }
     return fruitsoorten;
   };
@@ -47,7 +48,7 @@ const getAll = async () => {
       return oogstplaats;
       } catch (error){
           getLogger().error('Error during create', { error, });
-          throw error;
+          throw handleDBError(error);
       }
   };
 
@@ -64,7 +65,7 @@ const getAll = async () => {
       return await getById(id);
       } catch (error){
           getLogger().error('Error during updateBy', { error, });
-          throw error;
+          throw handleDBError(error);
       }
   }
 
@@ -74,11 +75,11 @@ const getAll = async () => {
           where:{id: id}
       })
       if (!rowsDeleted>0){
-        throw Error(`No oogstplaats with id ${id} exists`, { id })
+        throw ServiceError.notFound(`No oogstplaats with id ${id} exists`, { id })
         }; 
       } catch (error) {
           getLogger().error('Error during deleteById', { error, });
-          throw error;
+          throw handleDBError(error);
       }
   }
 

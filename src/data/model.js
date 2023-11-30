@@ -4,7 +4,7 @@ const initializeModel = async (sequelize) => {
     //tabellen aanmaken
     const fruitsoort = sequelize.define('Fruitsoort', {
         id: {type: DataTypes.INTEGER, autoIncrement:true,primaryKey:true},
-        naam: {type: DataTypes.STRING, allowNull:false, unique: 'idx_fruit_naam_unique'},
+        naam: {type: DataTypes.STRING, allowNull:false},
         variëteit: {type: DataTypes.STRING, allowNull:false},
         prijsper100kg:{type: DataTypes.FLOAT, allowNull:true},       
     });
