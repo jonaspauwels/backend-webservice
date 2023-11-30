@@ -27,7 +27,7 @@ module.exports = {
   },
 
   async down (queryInterface) {
-    await queryInterface.bulkDelete('products', null, {});
+    await queryInterface.bulkDelete('fruitsoorts', null, {});
   }
 };
 

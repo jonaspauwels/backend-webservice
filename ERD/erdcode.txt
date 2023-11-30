@@ -3,16 +3,10 @@
 naam
 variëteit
 prijsper100kg
-+oogstplaats
 
 [Koelcel]
 *id
 capaciteit
-
-[Product]
-*id
-naam
-beschrijving
 
 [Oogstplaats]
 *id
@@ -20,20 +14,11 @@ naam
 geolocatie
 oppervlakteInHectaren
 
-[Behandeling]
-+*KoelcelId
-+*ProductId
-hoeveelheid
-startdatum
-einddatum
-
 [HoeveelheidPerKoelcel]
 +*FruitID
 +*KoelcelID
 hoeveelheid
 
-Koelcel 1--* Behandeling
-Product 1--* Behandeling
 Fruitsoort *--1 Oogstplaats
 Koelcel 1--* HoeveelheidPerKoelcel
 Fruitsoort 1--* HoeveelheidPerKoelcel

@@ -54,10 +54,10 @@ welke oogstplaats in welke koelcel zit en vice versa. Er wordt ook bijgehouden o
 
 - `GET /api/koelcellen`: alle koelcellen ophalen
 - `GET /api/koelcellen/:id`: koelcel met bepaald id ophalen
+- `GET /api/koelcellen/:koelcelId/fruitsoorten`: alle fruitsoorten van één koelcel ophalen
 - `POST /api/koelcellen`: nieuwe koelcel toevoegen
 - `PUT /api/koelcellen/:id`: koelcel met bepaald id aanpassen
 - `DELETE /api/koelcellen/:id`: koelcel met bepaald id verwijderen
-- `GET /api/koelcellen/:koelcelId/fruitsoorten`: alle fruitsoorten van één koelcel ophalen
 
 ### Product
 

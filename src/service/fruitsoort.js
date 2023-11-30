@@ -1,4 +1,4 @@
-const { getSequelize } = require("./index");
+const { getSequelize } = require("../data");
 const { getLogger } = require("../core/logging")
 const oogstplaatsService = require('./oogstplaats')
 const koelcelService = require('./koelcel')
@@ -12,13 +12,13 @@ const getAll = async () => {
   };
   
   const getById = async (id) => {
-    const fruitsoort = await getSequelize().models.Fruitsoort.findAll({
+    const [fruitsoort] = await getSequelize().models.Fruitsoort.findAll({
       attributes: { exclude: ['createdAt', 'updatedAt'] },
       where: {
           id: id
       }
+      
   });
-
     if (!fruitsoort){
       throw Error(`No fruitsoort with id ${id} exists`, { id });
     }
@@ -26,8 +26,12 @@ const getAll = async () => {
   };
 
   const getKoelcellenByFruitsoortId = async (id) => {
-    const koelcellen = await getSequelize().models.Oogstplaats.findAll({
-      include: getSequelize().models.Koelcel,
+    const [koelcellen] = await getSequelize().models.Fruitsoort.findAll({
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      include: {model: getSequelize().models.Koelcel,
+                attributes: {exclude: ['createdAt', 'updatedAt'],
+                },
+                },
       where: {
           id: id
       }
@@ -64,14 +68,28 @@ const getAll = async () => {
   };
 
   const createHoeveelheid = async (fruitId, koelcelId, { hoeveelheid }) => {
-    const bestaandeFruitsoort = getById(fruitId);
-    const bestaandeKoelcel = koelcelService.getById(koelcelId);
+    
+    
+    const bestaandeFruitsoort = await getById(fruitId);
+    const bestaandeKoelcel = await koelcelService.getById(koelcelId);
+    const [bestaandeHoeveelheid] = await getSequelize().models.HoeveelheidPerKoelcel.findAll({
+      where : {
+        FruitsoortId : fruitId,
+        KoelcelId: koelcelId
+      }
+    })
+    
+    console.log('bestaande hoeveelheid: ',bestaandeHoeveelheid)
 
     if (!bestaandeFruitsoort) {
       throw Error(`No fruitsoort with id ${fruitId} exists`, { fruitId });
     }
     if (!bestaandeKoelcel) {
       throw Error(`No koelcel with id ${koelcelId} exists`, { koelcelId });
+    }
+
+    if (bestaandeHoeveelheid) {
+      throw Error('Match between koelcel and fruitsoort allready exists, please use update (PUT).')
     }
 
     try {
@@ -101,7 +119,7 @@ const getAll = async () => {
     }
 
     try {
-      const aangepasteHoeveelheid = await getSequelize().models.HoeveelheidPerKoelcel.update({
+      await getSequelize().models.HoeveelheidPerKoelcel.update({
           hoeveelheid,
           },{
               where: {
@@ -109,6 +127,12 @@ const getAll = async () => {
                   KoelcelId: koelcelId
               }
           });
+      const [aangepasteHoeveelheid] = await getSequelize().models.HoeveelheidPerKoelcel.findAll({
+        where : {
+          FruitsoortId: fruitId,
+          KoelcelId: koelcelId,
+        },
+      });
       return aangepasteHoeveelheid;
       } catch (error) {
           getLogger().error('Error during updateHoeveelheid', { error, });
@@ -136,7 +160,7 @@ const getAll = async () => {
             id:id
         }
     });
-    return getById(id);
+    return await getById(id);
     } catch (error){
         getLogger().error('Error during updateById', { error, });
         throw error;

@@ -5,7 +5,7 @@ const validate = require('../core/validation');
 
 const getAllOogstplaatsen = async (ctx) => {
   ctx.body = await oogstService.getAll();  
-  };
+};
 
 getAllOogstplaatsen.validationScheme = null;
  
@@ -14,20 +14,20 @@ const getOogstplaatsById = async (ctx) => {
 };
 
 getOogstplaatsById.validationScheme = {
-params: Joi.object({
-  id: Joi.number().integer().positive(),
-}),
+  params: Joi.object({
+    id: Joi.number().integer().positive(),
+  }),
 };
 
 const getFruitsoortenByOogstplaatsId = async (ctx) => {
   ctx.body = await oogstService.getFruitsoortenByOogstplaatsId(ctx.params.oogstplaatsid);
-}
+};
 
 getFruitsoortenByOogstplaatsId.validationScheme = {
   params: Joi.object({
     oogstplaatsid: Joi.number().integer().positive(),
   }),
-  }
+  };
 
 const createOogstplaats =  async (ctx) => {
   ctx.body = await oogstService.create({
@@ -63,7 +63,7 @@ updateOogstplaats.validationScheme = {
   },
 };
 const deleteOogstplaats = async (ctx) => {
-    oogstService.deleteById(ctx.params.id);
+    await oogstService.deleteById(ctx.params.id);
     ctx.status = 204;
   };
 

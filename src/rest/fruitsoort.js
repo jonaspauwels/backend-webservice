@@ -43,6 +43,7 @@ createFruitsoort.validationScheme = {
     naam: Joi.string(),
     variëteit:Joi.string(),
     prijsper100kg: Joi.number().positive().precision(2).default(0),
+    OogstplaatId: Joi.number().integer().positive(),
   }
 }
 
@@ -64,7 +65,7 @@ createHoeveelheid.validationScheme = {
 }
   
 const updateHoeveelheid = async (ctx) => {
-  ctx.body = fruitService.updateHoeveelheid(
+  ctx.body = await fruitService.updateHoeveelheid(
       ctx.params.fruitsoortId, ctx.params.koelcelId, 
       {...ctx.request.body});
 };
@@ -80,7 +81,7 @@ updateHoeveelheid.validationScheme = {
 };
 
 const updateFruitsoort = async (ctx) => {
-    ctx.body = fruitService.updateById(ctx.params.id,
+    ctx.body = await fruitService.updateById(ctx.params.id,
     {...ctx.request.body});
   };
 
@@ -92,12 +93,13 @@ updateFruitsoort.validationScheme = {
       naam: Joi.string(),
       variëteit:Joi.string(),
       prijsper100kg: Joi.number().positive().precision(2).default(0),
+      OogstplaatId: Joi.number().integer().positive()
     },
   };
   
 const deleteFruitsoort = async (ctx) => {
-    fruitService.deleteById(Number(ctx.params.id));
-    ctx.body = 204;
+    await fruitService.deleteById(Number(ctx.params.id));
+    ctx.status = 204;
   };
 
 deleteFruitsoort.validationScheme = {
@@ -128,10 +130,10 @@ module.exports = (app) => {
   router.post('/',
     validate(createFruitsoort.validationScheme),
     createFruitsoort);
-  router.post('/:fruitsoortId/koelcllen/:koelcelid',
+  router.post('/:fruitsoortId/koelcellen/:koelcelId',
     validate(createHoeveelheid.validationScheme),
     createHoeveelheid);
-  router.put('/:fruitsoortId/koelcellen/:koelcelid',
+  router.put('/:fruitsoortId/koelcellen/:koelcelId',
     validate(updateHoeveelheid.validationScheme),
     updateHoeveelheid);
   router.put('/:id',

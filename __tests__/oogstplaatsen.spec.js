@@ -74,7 +74,7 @@ describe('Oogstplaatsen', () => {
 
         afterAll(async () => {
             for (id of dataToDelete.oogstplaatsen) {
-                await getSequelize().models.Oogstplaats.destroy({
+                await sequelize.models.Oogstplaats.destroy({
                     where:{
                         id: id
                     }
@@ -134,7 +134,6 @@ describe('Oogstplaatsen', () => {
         });
     })
 
-    // TODO als fruitsoort klaar is
     describe('GET /api/oogstplaatsen/:oogstplaatsId/fruitsoorten', () => {
         beforeAll(async () => {
             await sequelize.models.Oogstplaats.bulkCreate(data.oogstplaatsen);
@@ -156,15 +155,15 @@ describe('Oogstplaatsen', () => {
                     }
                 });
             };  
-        })
+        });
 
         it('should return 200 and all fruitsoorten by oogstplaatsId', async () => {
-            const response = await request.get(url+'/2/fruitsoorten')
+            const response = await request.get(url+'/2/fruitsoorten');
             expect(response.status).toBe(200);
             expect(response.body.Fruitsoorts[0].id).toBe(2);
             expect(response.body.Fruitsoorts[0].naam).toBe('Peer')
             expect(response.body.Fruitsoorts[0].prijsper100kg).toBe(100)
-        })
+        });
 
     })
 
@@ -179,7 +178,7 @@ describe('Oogstplaatsen', () => {
                     }
                 });
             };  
-        })
+        });
 
         it('should return 201 and created oogstplaats', async () => {
             const response = await request.post(url).send({
@@ -208,9 +207,7 @@ describe('Oogstplaatsen', () => {
         afterAll(async () => {
             for (id of dataToDelete.oogstplaatsen) {
                 await sequelize.models.Oogstplaats.destroy({
-                    where:{
-                        id: id
-                    }
+                    where:{id: id}
                 });
             };   
         });
@@ -220,7 +217,7 @@ describe('Oogstplaatsen', () => {
                 naam: 'Beernaarts',
                 breedtegraad: 21.267,
                 lengtegraad: 3.163,
-                oppervlakteInHectaren: 5})
+                oppervlakteInHectaren: 5});
             
             expect(response.status).toBe(200);
             expect(response.body.naam).toBe('Beernaarts');

@@ -2,7 +2,7 @@ const { getSequelize } = require("../data");
 const { getLogger } = require("../core/logging");
 
 const getAll = async () => {
-    const {count, rows } = await getSequelize().models.Oogstplaats.findAndCountAll({
+    const { count, rows } = await getSequelize().models.Oogstplaats.findAndCountAll({
       attributes: { exclude: ['createdAt', 'updatedAt'] }
       }); 
     
@@ -21,24 +21,22 @@ const getAll = async () => {
     if (!oogstplaats) {
       throw Error(`No oogstplaats with id ${id} exists`, { id });
     }
-    return oogstplaats
+    return oogstplaats;
   };
 
   const getFruitsoortenByOogstplaatsId = async (id) => {
-     const [fruitsoorten] = await getSequelize().models.Oogstplaats.findAll({
+    const [fruitsoorten] = await getSequelize().models.Oogstplaats.findAll({
       include: getSequelize().models.Fruitsoort,
-      where: {
-          id: id
-      }
-  })
+      where: {id: id}
+      })
 
-     if (!fruitsoorten) {
+    if (!fruitsoorten) {
       throw Error(`No oogstplaats with id ${id} exists`, { id });
      }
-     return fruitsoorten;
+    return fruitsoorten;
   };
 
-  const create = async({ naam, breedtegraad, lengtegraad, oppervlakteInHectaren }) => {
+  const create = async ({ naam, breedtegraad, lengtegraad, oppervlakteInHectaren }) => {
     try {
       const oogstplaats = await getSequelize().models.Oogstplaats.create({
           naam, 
@@ -53,7 +51,7 @@ const getAll = async () => {
       }
   };
 
-  const updateById = async(id, {naam, breedtegraad, lengtegraad, oppervlakteInHectaren} ) => {
+  const updateById = async (id, {naam, breedtegraad, lengtegraad, oppervlakteInHectaren} ) => {
     try {
       await getSequelize().models.Oogstplaats.update({
         naam,
@@ -61,25 +59,21 @@ const getAll = async () => {
         lengtegraad,
         oppervlakteInHectaren
           },{
-          where: {
-            id:id
-          }
-      })
-      return await getById(id)
+          where: {id:id}
+      });
+      return await getById(id);
       } catch (error){
           getLogger().error('Error during updateBy', { error, });
           throw error;
       }
   }
 
-  const deleteById = async(id) => {
+  const deleteById = async (id) => {
     try{
       const rowsDeleted = await getSequelize().models.Oogstplaats.destroy({
-          where:{
-              id: id
-          }
+          where:{id: id}
       })
-        if (!rowsDeleted>0){
+      if (!rowsDeleted>0){
         throw Error(`No oogstplaats with id ${id} exists`, { id })
         }; 
       } catch (error) {
