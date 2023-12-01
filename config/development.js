@@ -14,5 +14,13 @@ module.exports = {
       name: 'fruit',
       username: 'root',
     },
+    auth: {
+      argon: {
+        saltLength: 16,
+        hashLength: 32,
+        timeCost: 6,
+        memoryCost: 2 ** 17,
+      },
+    },
   };
   

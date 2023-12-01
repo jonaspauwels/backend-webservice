@@ -121,7 +121,6 @@ describe('Oogstplaatsen', () => {
 
         it('should return 200 and all koelcellen', async () => {
             const response = await request.get(url);
-            console.log(response.body)
             expect(response.status).toBe(200);
             expect(response.body.count).toBe(3);
             expect(response.body.rows[0]).toEqual({
@@ -138,6 +137,14 @@ describe('Oogstplaatsen', () => {
             });
 
         })
+
+        it('should return 400 when given an argument', async () => {
+            const response = await request.get(`${url}?invalid=true`);
+            
+            expect(response.statusCode).toBe(400);
+            expect(response.body.code).toBe('VALIDATION_FAILED');
+            expect(response.body.details.query).toHaveProperty('invalid');
+          });
     });
 
     describe('GET /api/koelcellen/:id', () => {
@@ -163,6 +170,28 @@ describe('Oogstplaatsen', () => {
                 capaciteit: 500
             });
         });
+
+        it('should 404 when requesting not existing koelcel', async () => {
+            const response = await request.get(url+'/4');
+      
+            expect(response.statusCode).toBe(404);
+            expect(response.body).toMatchObject({
+              code: 'NOT_FOUND',
+              message: 'No koelcel with id 4 exists',
+              details: {
+                id: 4,
+              },
+            });
+            expect(response.body.stack).toBeTruthy();
+          });
+
+        it('should 400 when given an argument', async () => {
+            const response = await request.get(url+'?invalid=true');
+            
+            expect(response.statusCode).toBe(400);
+            expect(response.body.code).toBe('VALIDATION_FAILED');
+            expect(response.body.details.query).toHaveProperty('invalid');
+          });
     });
 
     describe('GET /api/koelcellen/:koelcelId/fruitsoorten', () => {
@@ -211,6 +240,28 @@ describe('Oogstplaatsen', () => {
             expect(response.body.Fruitsoorts[1].prijsper100kg).toBe(100);
             expect(response.body.Fruitsoorts[1].OogstplaatId).toBe(2);
         });
+
+        it('should return 404 when requesting not existing koelcel', async () => {
+            const response = await request.get(url+'/4');
+      
+            expect(response.statusCode).toBe(404);
+            expect(response.body).toMatchObject({
+              code: 'NOT_FOUND',
+              message: 'No koelcel with id 4 exists',
+              details: {
+                id: 4,
+              },
+            });
+            expect(response.body.stack).toBeTruthy();
+          });
+
+        it('should return 400 when given an argument', async () => {
+            const response = await request.get(url+'?invalid=true');
+            
+            expect(response.statusCode).toBe(400);
+            expect(response.body.code).toBe('VALIDATION_FAILED');
+            expect(response.body.details.query).toHaveProperty('invalid');
+          });
     });
 
     describe('POST /api/koelcellen', () => {
@@ -236,7 +287,15 @@ describe('Oogstplaatsen', () => {
             expect(response.body.capaciteit).toBe(900);
 
             koelcellenToDelete.push(response.body.id);
-        })
+        });
+
+        it('should return 400 when missing capaciteit', async () => {
+            const response = await request.post(url).send({
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.body.code).toBe('VALIDATION_FAILED');
+            expect(response.body.details.body).toHaveProperty('capaciteit'); 
+        });
     });
 
     describe('PUT /api/koelcellen/:id', () => {
@@ -260,6 +319,29 @@ describe('Oogstplaatsen', () => {
             expect(response.status).toBe(200);
             expect(response.body.capaciteit).toBe(200);
         });
+
+        it('should return 404 when updating non existing oogstplaats', async () => {
+            const response = await request.put(url+'/4').send({
+                capaciteit: 300});
+            
+            expect(response.statusCode).toBe(404);
+            expect(response.body).toMatchObject({
+                code: 'NOT_FOUND',
+                message: 'No koelcel with id 4 exists',
+                details: {
+                  id: 4,
+                },
+              });
+              expect(response.body.stack).toBeTruthy();
+        });
+
+        it('should return 400 when missing capaciteit', async () => {
+            const response = await request.post(url).send({
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.body.code).toBe('VALIDATION_FAILED');
+            expect(response.body.details.body).toHaveProperty('capaciteit'); 
+        });
     });
 
     describe('DELETE /api/koelcellen/:id', () => {
@@ -270,11 +352,32 @@ describe('Oogstplaatsen', () => {
             });
         });
 
-
         it('should return 204 and empty body', async () => {
             const response = await request.delete(url+'/1');
             expect(response.status).toBe(204);
             expect(response.body[0]).toBe(undefined);
-        })
+        });
+
+        it('should return 400 with invalid koelcel id', async () => {
+            const response = await request.delete(url+'/invalid');
+      
+            expect(response.statusCode).toBe(400);
+            expect(response.body.code).toBe('VALIDATION_FAILED');
+            expect(response.body.details.params).toHaveProperty('id');
+          });
+
+          it('should return 404 with not existing koelcel', async () => {
+            const response = await request.delete(url+'/4');
+      
+            expect(response.statusCode).toBe(404);
+            expect(response.body).toMatchObject({
+              code: 'NOT_FOUND',
+              message: 'No koelcel with id 4 exists',
+              details: {
+                id: 4,
+              },
+            });
+            expect(response.body.stack).toBeTruthy();
+          });
     });
 });

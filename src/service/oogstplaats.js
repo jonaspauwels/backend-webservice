@@ -53,6 +53,15 @@ const getAll = async () => {
   };
 
   const updateById = async (id, {naam, breedtegraad, lengtegraad, oppervlakteInHectaren} ) => {
+    const [oogstplaats] = await getSequelize().models.Oogstplaats.findAll({
+      where: {
+          id: id
+      }
+    });
+    if (!oogstplaats) {
+      throw ServiceError.notFound(`No oogstplaats with id ${id} exists`, { id });
+    }
+  
     try {
       await getSequelize().models.Oogstplaats.update({
         naam,

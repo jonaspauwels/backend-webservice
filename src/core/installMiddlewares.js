@@ -95,7 +95,7 @@ module.exports = function installMiddleware(app) {
       ctx.status = 404;
       ctx.body = {
         code: 'NOT_FOUND',
-        message: `Unkonwn resource: ${ctx.url}`,
+        message: `Unknown resource: ${ctx.url}`,
       };
     }
   });

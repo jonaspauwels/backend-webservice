@@ -48,7 +48,7 @@ const getAll = async () => {
   
   const create = async({ naam, variëteit, prijsper100kg, OogstplaatId }) => {
   
-    const bestaandeOogstplaats =  oogstplaatsService.getById(OogstplaatId)
+    const bestaandeOogstplaats =  await oogstplaatsService.getById(OogstplaatId)
 
     if (!bestaandeOogstplaats) {
       throw ServiceError.notFound(`No oogstplaats with id ${OogstplaatId} exists`, { OogstplaatId });
@@ -72,32 +72,30 @@ const getAll = async () => {
 
   const createHoeveelheid = async (fruitId, koelcelId, { hoeveelheid }) => {
     
-    
     const bestaandeFruitsoort = await getById(fruitId);
+    if (!bestaandeFruitsoort) {
+      throw ServiceError.notFound(`No fruitsoort with id ${fruitId} exists`, { fruitId });
+    }
+
     const bestaandeKoelcel = await koelcelService.getById(koelcelId);
+    if (!bestaandeKoelcel) {
+      throw ServiceError.notFound(`No koelcel with id ${koelcelId} exists`, { koelcelId });
+    }
+
     const [bestaandeHoeveelheid] = await getSequelize().models.HoeveelheidPerKoelcel.findAll({
       where : {
         FruitsoortId : fruitId,
         KoelcelId: koelcelId
       }
     })
-
-    if (!bestaandeFruitsoort) {
-      throw ServiceError.notFound(`No fruitsoort with id ${fruitId} exists`, { fruitId });
-    }
-    if (!bestaandeKoelcel) {
-      throw ServiceError.notFound(`No koelcel with id ${koelcelId} exists`, { koelcelId });
-    }
     if (bestaandeHoeveelheid) {
-      throw ServiceError.duplicateValues('Match between koelcel and fruitsoort allready exists, please use update (PUT).')
+      throw ServiceError.validationFailed(`Match between koelcel ${koelcelId} and fruitsoort ${fruitId} already exists, please use update (PUT).`)
     }
 
     const freeCapacity = await evaluateCapacity(bestaandeKoelcel.dataValues.capaciteit, koelcelId, 'create');
-    console.log(freeCapacity)
-    console.log(hoeveelheid)
 
     if (hoeveelheid > freeCapacity){
-      throw ServiceError.exceededCapacity('Hoeveelheid is groter dan capaciteit koelcel');
+      throw ServiceError.validationFailed(`Hoeveelheid is groter dan capaciteit van koelcel ${koelcelId}`);
     };
 
     try {
@@ -115,19 +113,31 @@ const getAll = async () => {
 
   const updateHoeveelheid = async ( fruitId, koelcelId, { hoeveelheid }) => {
     const bestaandeFruitsoort = await getById(fruitId);
-    const bestaandeKoelcel = await koelcelService.getById(koelcelId);
-
     if (!bestaandeFruitsoort) {
       throw ServiceError.notFound(`No fruitsoort with id ${fruitId} exists`, { fruitId });
     }
+
+    const bestaandeKoelcel = await koelcelService.getById(koelcelId);
     if (!bestaandeKoelcel) {
       throw ServiceError.notFound(`No koelcel with id ${koelcelId} exists`, { koelcelId });
     }
 
+    const [bestaandeHoeveelheid] = await getSequelize().models.HoeveelheidPerKoelcel.findAll({
+      where : {
+        FruitsoortId : fruitId,
+        KoelcelId: koelcelId
+      }
+    })
+    if (!bestaandeHoeveelheid) {
+      throw ServiceError.validationFailed(`Match between koelcel ${koelcelId} and fruitsoort ${fruitId} does not exists, please use create (POST).`)
+    }
+
+   
+
     freeCapacity = await evaluateCapacity(bestaandeKoelcel.dataValues.capaciteit, koelcelId, 'update', fruitId);
 
     if (hoeveelheid > freeCapacity){
-      throw ServiceError.exceededCapacity('Hoeveelheid is groter dan capaciteit koelcel');
+      throw ServiceError.validationFailed(`Hoeveelheid is groter dan capaciteit van koelcel ${koelcelId}`);
     };
 
     try {
@@ -187,7 +197,7 @@ const deleteById = async (id) => {
         }
     })
     if (!rowsDeleted>0){
-      throw ServiceError.notFound(`No fruitsoort with id ${fruitId} exists`, { fruitId });
+      throw ServiceError.notFound(`No fruitsoort with id ${id} exists`, { id });
     }
     } catch (error) {
         getLogger().error('Error during deleteById', { error, });

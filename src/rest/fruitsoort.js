@@ -98,7 +98,7 @@ updateFruitsoort.validationScheme = {
   };
   
 const deleteFruitsoort = async (ctx) => {
-    await fruitService.deleteById(Number(ctx.params.id));
+    await fruitService.deleteById(ctx.params.id);
     ctx.status = 204;
   };
 

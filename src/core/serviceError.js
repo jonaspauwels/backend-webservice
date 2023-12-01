@@ -19,13 +19,6 @@ class ServiceError extends Error {
         return new ServiceError(VALIDATION_FAILED, message, details);
     }
 
-    static duplicateValues(message, details) {
-        return new ServiceError(DUPLICATE_VALUES, message, details);
-    }
-
-    static exceededCapacity(message, details) {
-        return new ServiceError(EXCEEDED_CAPACITY, message, details);
-    }
 
     get isNotFound() {
         return this.code === NOT_FOUND;
@@ -35,13 +28,6 @@ class ServiceError extends Error {
         return this.code === VALIDATION_FAILED;
     }
 
-    get isDuplicateValues() {
-        return this.code === DUPLICATE_VALUES;
-    }
-
-    get isExceededCapacity() {
-        return this.code === EXCEEDED_CAPACITY;
-    }
 }
 
 module.exports = ServiceError;
