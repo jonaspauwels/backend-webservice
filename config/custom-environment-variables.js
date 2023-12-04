@@ -1,6 +1,6 @@
 module.exports = {
     env: 'NODE_ENV',
-    datapas: 'DATA_PASS',
+    datapas: 'DATABASE_PASSWORD',
     port: 'PORT',
     database: {
       host: 'DATABASE_HOST',
