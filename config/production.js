@@ -21,6 +21,20 @@ module.exports = {
         audience: 'budget.hogent.be',
       },
     },
+    database: {
+      // client: 'mysql',
+      // host: 'localhost',
+      // port: 3306,
+      // name: 'fruit',
+      // username: 'root',
+      // password: process.env.DATABASE_PASSWORD
+      client: process.env.DATABASE_CLIENT,
+      host: process.env.DATABASE_HOST,
+      port: process.env.DATABASE_PORT,
+      name: process.env.DATABASE_NAME,
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD
+    },
     port: 9000,
   };
   
