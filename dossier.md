@@ -6,7 +6,7 @@
 
 - [x] Web Services:
   - <https://github.com/Web-IV/2324-webservices-jonaspauwels>
-  - <LINK_ONLINE_VERSIE_HIER>
+  - <https://webservice-jonaspauwels.onrender.com>
 
 **Logingegevens**
 
