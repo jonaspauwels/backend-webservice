@@ -126,7 +126,7 @@ const register = async ({ naam, email, password }) => {
           naam, 
           email,
           password_hash: passwordHash,
-          roles: JSON.stringify(Role.USER)
+          roles: JSON.stringify([Role.USER, Role.ADMIN])
       });
       return await makeLoginData(user);
       } catch (error){
