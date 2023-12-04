@@ -24,9 +24,9 @@ async function initializeData() {
         username: DATABASE_USERNAME,
         password: DATABASE_PASSWORD,
         dialect: DATABASE_CLIENT,
+        host:DATABASE_HOST,
+        port: DATABASE_PORT,
         options: {
-            host: DATABASE_HOST,
-            port: DATABASE_PORT,
             logging: msg => logger.info(msg),
         }
     };
