@@ -32,7 +32,7 @@ async function initializeData() {
     };
     // connecteren met mysql en database creëeren indien onbestaande
     logger.info('Creating Database if not exists');
-    const connection = await mysql.createConnection({ host: 'localhost', port: DATABASE_PORT, user: DATABASE_USERNAME, password: DATABASE_PASSWORD });
+    const connection = await mysql.createConnection({ host: DATABASE_HOST, port: DATABASE_PORT, user: DATABASE_USERNAME, password: DATABASE_PASSWORD });
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DATABASE_NAME}\`;`);
     connection.close();
 
