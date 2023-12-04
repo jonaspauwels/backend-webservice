@@ -1,4 +1,5 @@
 module.exports = {
+    
     log: {
       level: 'silly',
       disabled: false,
@@ -13,6 +14,7 @@ module.exports = {
       port: 3306,
       name: 'fruit',
       username: 'root',
+      password: process.env.DATABASE_PASSWORD
     },
     auth: {
       argon: {

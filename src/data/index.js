@@ -22,7 +22,7 @@ async function initializeData() {
         database: DATABASE_NAME,
         username: DATABASE_USERNAME,
         password: DATABASE_PASSWORD,
-        dialect: mysql,
+        dialect: 'mysql',
         options: {
             host: DATABASE_HOST,
             port: DATABASE_PORT,
