@@ -33,10 +33,10 @@ return {
 
   start() {
     return new Promise((resolve) => {
-      app.listen(9000, ()=> {
-        getLogger().info('Server listening on http://localhost:9000');
-        resolve();
-      });
+      const port = config.get('port');
+      app.listen(port);
+      getLogger().info(`Server listening on http://localhost:${port}`);
+      resolve();
     });
   },
 

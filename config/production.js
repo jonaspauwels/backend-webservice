@@ -21,5 +21,6 @@ module.exports = {
         audience: 'budget.hogent.be',
       },
     },
+    port: 9000,
   };
   
