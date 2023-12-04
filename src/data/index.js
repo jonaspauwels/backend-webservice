@@ -67,12 +67,12 @@ async function initializeData() {
         logger: console,    
     })
 
-    try { await migrations.up();
-          logger.info('Migrations succeeded');
-        } catch (error) {
-            logger.error('Error occured during migrations');
-            throw new Error(error);
-        }
+    // try { await migrations.up();
+    //       logger.info('Migrations succeeded');
+    //     } catch (error) {
+    //         logger.error('Error occured during migrations');
+    //         throw new Error(error);
+    //     }
     
 
     if (process.env.NODE_ENV === 'development') {
