@@ -6,7 +6,6 @@ const mysql = require('mysql2/promise')
 
 const config = require('config');
 
-const DATABASE_CLIENT = config.get('database.client');
 const DATABASE_NAME = config.get('database.name');
 const DATABASE_HOST = config.get('database.host');
 const DATABASE_PORT = config.get('database.port');
@@ -23,7 +22,7 @@ async function initializeData() {
         database: DATABASE_NAME,
         username: DATABASE_USERNAME,
         password: DATABASE_PASSWORD,
-        dialect: DATABASE_CLIENT,
+        dialect: mysql,
         options: {
             host: DATABASE_HOST,
             port: DATABASE_PORT,
