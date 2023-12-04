@@ -18,6 +18,7 @@ async function initializeData() {
     const logger = getLogger();
     logger.info('Initializing database connection...');
 
+    console.log(DATABASE_PASSWORD)
     sequelizeOptions = {
         database: DATABASE_NAME,
         username: DATABASE_USERNAME,

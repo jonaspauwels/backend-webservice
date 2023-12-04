@@ -22,12 +22,6 @@ module.exports = {
       },
     },
     database: {
-      // client: 'mysql',
-      // host: 'localhost',
-      // port: 3306,
-      // name: 'fruit',
-      // username: 'root',
-      // password: process.env.DATABASE_PASSWORD
       client: process.env.DATABASE_CLIENT,
       host: process.env.DATABASE_HOST,
       port: process.env.DATABASE_PORT,
