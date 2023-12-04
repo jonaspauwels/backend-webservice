@@ -89,13 +89,13 @@ const getAll = async () => {
       }
     })
     if (bestaandeHoeveelheid) {
-      throw ServiceError.validationFailed(`Match between koelcel ${koelcelId} and fruitsoort ${fruitId} already exists, please use update (PUT).`)
+      throw ServiceError.duplicateValues(`Match between koelcel ${koelcelId} and fruitsoort ${fruitId} already exists, please use update (PUT).`)
     }
 
     const freeCapacity = await evaluateCapacity(bestaandeKoelcel.dataValues.capaciteit, koelcelId, 'create');
 
     if (hoeveelheid > freeCapacity){
-      throw ServiceError.validationFailed(`Hoeveelheid is groter dan capaciteit van koelcel ${koelcelId}`);
+      throw ServiceError.exceededCapacity(`Hoeveelheid is groter dan capaciteit van koelcel ${koelcelId}`);
     };
 
     try {
@@ -137,7 +137,7 @@ const getAll = async () => {
     freeCapacity = await evaluateCapacity(bestaandeKoelcel.dataValues.capaciteit, koelcelId, 'update', fruitId);
 
     if (hoeveelheid > freeCapacity){
-      throw ServiceError.validationFailed(`Hoeveelheid is groter dan capaciteit van koelcel ${koelcelId}`);
+      throw ServiceError.exceededCapacity(`Hoeveelheid is groter dan capaciteit van koelcel ${koelcelId}`);
     };
 
     try {

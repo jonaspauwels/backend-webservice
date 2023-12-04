@@ -2,6 +2,8 @@ const Router = require('@koa/router');
 const oogstService = require('../service/oogstplaats');
 const Joi = require('joi');
 const validate = require('../core/validation');
+const { requireAuthentication ,makeRequireRole } = require('../core/auth');
+const Role = require('../core/roles');
 
 const getAllOogstplaatsen = async (ctx) => {
   ctx.body = await oogstService.getAll();  
@@ -82,22 +84,31 @@ module.exports = (app) => {
     prefix: '/oogstplaatsen',
   });
 
+  const requireAdmin = makeRequireRole(Role.ADMIN);
+
+  // enkel ingelogde users kunnen oogstplaats info opvragen, enkel ADMIN kan hier wijzigingen aanbrengen
   router.get('/', 
+      requireAuthentication,
       validate(getAllOogstplaatsen.validationScheme),
       getAllOogstplaatsen);
   router.get('/:id', 
+      requireAuthentication,
       validate(getOogstplaatsById.validationScheme),
       getOogstplaatsById);
   router.get('/:oogstplaatsid/fruitsoorten',
+      requireAuthentication,
       validate(getFruitsoortenByOogstplaatsId.validationScheme),
       getFruitsoortenByOogstplaatsId)
   router.post('/', 
+      requireAuthentication, requireAdmin, 
       validate(createOogstplaats.validationScheme),
       createOogstplaats);
   router.put('/:id', 
+      requireAuthentication, requireAdmin, 
       validate(updateOogstplaats.validationScheme),
       updateOogstplaats);
   router.delete('/:id', 
+      requireAuthentication, requireAdmin, 
       validate(deleteOogstplaats.validationScheme),
       deleteOogstplaats);
 

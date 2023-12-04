@@ -16,7 +16,7 @@ const initializeModel = async (sequelize) => {
 
     const HoeveelheidPerKoelcel = sequelize.define('HoeveelheidPerKoelcel',{
         hoeveelheid: {type: DataTypes.INTEGER, allowNull:false}
-    })
+    });
 
     const oogstplaats = sequelize.define('Oogstplaats',{
         id: {type: DataTypes.INTEGER, autoIncrement:true, primaryKey:true},
@@ -24,6 +24,14 @@ const initializeModel = async (sequelize) => {
         breedtegraad: {type: DataTypes.FLOAT, allowNull: false},
         lengtegraad: {type: DataTypes.FLOAT, allowNull:false},
         oppervlakteInHectaren: {type: DataTypes.FLOAT, allowNull:false}
+    });
+
+    sequelize.define('User', {
+        id: {type: DataTypes.INTEGER, autoIncrement:true, primaryKey:true},
+        naam: {type: DataTypes.STRING, allowNull:false},
+        email: {type: DataTypes.STRING, allowNull:false, unique:'idx_user_email_unique'},
+        password_hash: {type: DataTypes.STRING, allowNull:false},
+        roles: {type: DataTypes.JSON, allowNull: false}
     });
 
     //associaties leggen

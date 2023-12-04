@@ -81,6 +81,20 @@ module.exports = function installMiddleware(app) {
         if (error.isValidationFailed) {
           statusCode = 400
         }
+        if (error.isDuplicateValues) {
+          statusCode = 400;
+        }
+      
+        if (error.isExceededCapacity) {
+          statusCode = 400;
+        }
+        if (error.isUnauthorized) {
+          statusCode = 401;
+        }
+      
+        if (error.isForbidden) {
+          statusCode = 403;
+        }
       }
 
       ctx.status = statusCode;

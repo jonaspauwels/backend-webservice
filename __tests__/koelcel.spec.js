@@ -1,6 +1,5 @@
-const supertest = require('supertest');
-const createServer = require('../src/createServer');
-const { getSequelize } = require('../src/data');
+const { withServer, login } = require('./supertest.setup');
+const { testAuthHeader } = require('./common/auth');
 
 const data = {
     oogstplaatsen: [
@@ -87,20 +86,18 @@ const dataToDelete = {
 }
 
 describe('Oogstplaatsen', () => {
-    let server;
     let request;
     let sequelize;
+    let authHeader;
+
+    withServer(({supertest, sequelize: s}) => {
+        request = supertest;
+        sequelize = s;
+    });
 
     beforeAll(async () => {
-        server = await createServer(); 
-        request = supertest(server.getApp().callback());
-        sequelize = getSequelize();
-
+        authHeader = await login(request);
       });
-
-    afterAll(async () => {
-        await server.stop();
-    });
 
     const url = '/api/koelcellen';
 
@@ -120,7 +117,8 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 200 and all koelcellen', async () => {
-            const response = await request.get(url);
+            const response = await request.get(url).set('Authorization', authHeader);
+
             expect(response.status).toBe(200);
             expect(response.body.count).toBe(3);
             expect(response.body.rows[0]).toEqual({
@@ -139,7 +137,7 @@ describe('Oogstplaatsen', () => {
         })
 
         it('should return 400 when given an argument', async () => {
-            const response = await request.get(`${url}?invalid=true`);
+            const response = await request.get(`${url}?invalid=true`).set('Authorization', authHeader);
             
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -163,7 +161,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 200 and requested koelcel by id', async () => {
-            const response = await request.get(url+'/2');
+            const response = await request.get(url+'/2').set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
                 id: 2,
@@ -172,7 +170,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should 404 when requesting not existing koelcel', async () => {
-            const response = await request.get(url+'/4');
+            const response = await request.get(url+'/4').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
@@ -186,7 +184,7 @@ describe('Oogstplaatsen', () => {
           });
 
         it('should 400 when given an argument', async () => {
-            const response = await request.get(url+'?invalid=true');
+            const response = await request.get(url+'?invalid=true').set('Authorization', authHeader);
             
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -225,7 +223,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 200 and all fruitsoorten by koelcelId', async () => {
-            const response = await request.get(url+'/2/fruitsoorten');
+            const response = await request.get(url+'/2/fruitsoorten').set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body.id).toBe(2);
             expect(response.body.Fruitsoorts[0].id).toBe(1);
@@ -242,7 +240,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 404 when requesting not existing koelcel', async () => {
-            const response = await request.get(url+'/4');
+            const response = await request.get(url+'/4').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
@@ -256,7 +254,7 @@ describe('Oogstplaatsen', () => {
           });
 
         it('should return 400 when given an argument', async () => {
-            const response = await request.get(url+'?invalid=true');
+            const response = await request.get(url+'?invalid=true').set('Authorization', authHeader);
             
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -278,10 +276,9 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 201 and created koelcel', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 capaciteit: 900
             });
-
             expect(response.status).toBe(201);
             expect(response.body.id).toBeTruthy();
             expect(response.body.capaciteit).toBe(900);
@@ -290,7 +287,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 400 when missing capaciteit', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
             });
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -312,7 +309,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 200 and updated koelcel', async () => {
-            const response = await request.put(url+'/1').send({
+            const response = await request.put(url+'/1').set('Authorization', authHeader).send({
                 capaciteit: 200
             });
 
@@ -321,7 +318,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 404 when updating non existing oogstplaats', async () => {
-            const response = await request.put(url+'/4').send({
+            const response = await request.put(url+'/4').set('Authorization', authHeader).send({
                 capaciteit: 300});
             
             expect(response.statusCode).toBe(404);
@@ -336,7 +333,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 400 when missing capaciteit', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
             });
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -353,13 +350,13 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 204 and empty body', async () => {
-            const response = await request.delete(url+'/1');
+            const response = await request.delete(url+'/1').set('Authorization', authHeader);
             expect(response.status).toBe(204);
             expect(response.body[0]).toBe(undefined);
         });
 
         it('should return 400 with invalid koelcel id', async () => {
-            const response = await request.delete(url+'/invalid');
+            const response = await request.delete(url+'/invalid').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -367,7 +364,7 @@ describe('Oogstplaatsen', () => {
           });
 
           it('should return 404 with not existing koelcel', async () => {
-            const response = await request.delete(url+'/4');
+            const response = await request.delete(url+'/4').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
@@ -380,4 +377,5 @@ describe('Oogstplaatsen', () => {
             expect(response.body.stack).toBeTruthy();
           });
     });
+    testAuthHeader(() => request.get(url));
 });

@@ -2,6 +2,8 @@ const Router = require('@koa/router');
 const koelService = require('../service/koelcel');
 const Joi = require('joi');
 const validate = require('../core/validation');
+const { requireAuthentication ,makeRequireRole } = require('../core/auth');
+const Role = require('../core/roles');
 
 const getAllKoelcellen = async (ctx) => {
     ctx.body = await koelService.getAll();
@@ -76,23 +78,33 @@ module.exports = (app) => {
     const router = new Router({
       prefix: '/koelcellen',
     });
+
+    const requireAdmin = makeRequireRole(Role.ADMIN);
+
+  // enkel ingelogde users kunnen koelcel info opvragen, enkel ADMIN kan hier wijzigingen aanbrengen
   
     router.get('/', 
+        requireAuthentication,
         validate(getAllKoelcellen.validationScheme),
         getAllKoelcellen);    
     router.get('/:id', 
+        requireAuthentication,
         validate(getKoelcelById.validationScheme),
         getKoelcelById);
     router.get('/:koelcelId/fruitsoorten',
+        requireAuthentication,
         validate(getFruitsoortenByKoelcelId.validationScheme),
         getFruitsoortenByKoelcelId);
     router.post('/', 
+        requireAuthentication, requireAdmin, 
         validate(createKoelcel.validationScheme),
         createKoelcel);
     router.put('/:id', 
+        requireAuthentication, requireAdmin, 
         validate(updateKoelcel.validationScheme),
         updateKoelcel);
     router.delete('/:id', 
+        requireAuthentication, requireAdmin, 
         validate(deleteKoelcel.validationScheme),
         deleteKoelcel);
   

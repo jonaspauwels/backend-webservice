@@ -1,6 +1,5 @@
-const supertest = require('supertest');
-const createServer = require('../src/createServer');
-const { getSequelize } = require('../src/data');
+const { withServer, login } = require('./supertest.setup');
+const { testAuthHeader } = require('./common/auth');
 
 const data = {
     oogstplaatsen: [{
@@ -49,20 +48,18 @@ const dataToDelete = {
 }
 
 describe('Oogstplaatsen', () => {
-    let server;
     let request;
     let sequelize;
+    let authHeader;
+
+    withServer(({supertest, sequelize: s}) => {
+        request = supertest;
+        sequelize = s;
+    });
 
     beforeAll(async () => {
-        server = await createServer(); 
-        request = supertest(server.getApp().callback());
-        sequelize = getSequelize();
-
+        authHeader = await login(request);
       });
-
-    afterAll(async () => {
-        await server.stop();
-    });
 
     const url = '/api/oogstplaatsen';
 
@@ -83,7 +80,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 200 and all oogstplaatsen', async () => {
-            const response = await request.get(url);
+            const response = await request.get(url).set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body.count).toBe(2);
 
@@ -106,7 +103,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 400 when given an argument', async () => {
-            const response = await request.get(`${url}?invalid=true`);
+            const response = await request.get(`${url}?invalid=true`).set('Authorization', authHeader);
             
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -130,7 +127,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 200 and requested oogstplaats by id', async () => {
-            const response = await request.get(url+'/1');
+            const response = await request.get(url+'/1').set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
                 id: 1,
@@ -142,7 +139,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should 404 when requesting not existing oogstplaats', async () => {
-            const response = await request.get(url+'/3');
+            const response = await request.get(url+'/3').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
@@ -156,7 +153,7 @@ describe('Oogstplaatsen', () => {
           });
 
         it('should 400 when given an argument', async () => {
-            const response = await request.get(url+'?invalid=true');
+            const response = await request.get(url+'?invalid=true').set('Authorization', authHeader);
             
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -188,7 +185,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 200 and all fruitsoorten by oogstplaatsId', async () => {
-            const response = await request.get(url+'/2/fruitsoorten');
+            const response = await request.get(url+'/2/fruitsoorten').set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body.Fruitsoorts[0].id).toBe(2);
             expect(response.body.Fruitsoorts[0].naam).toBe('Peer')
@@ -196,7 +193,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 404 when requesting not existing oogstplaats', async () => {
-            const response = await request.get(url+'/3');
+            const response = await request.get(url+'/3').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
@@ -210,7 +207,7 @@ describe('Oogstplaatsen', () => {
           });
 
         it('should return 400 when given an argument', async () => {
-            const response = await request.get(url+'?invalid=true');
+            const response = await request.get(url+'?invalid=true').set('Authorization', authHeader);
             
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -232,7 +229,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 201 and created oogstplaats', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 naam: 'Test_oogstplaats',
                 breedtegraad: 5.1267,
                 lengtegraad: 41.63,
@@ -250,7 +247,7 @@ describe('Oogstplaatsen', () => {
         });
         
         it('should return 400 when missing naam', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 breedtegraad: 5.1267,
                 lengtegraad: 41.63,
                 oppervlakteInHectaren: 37.2
@@ -261,7 +258,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 400 when missing breedtegraad', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 naam: 'Test_oogstplaats',
                 lengtegraad: 41.63,
                 oppervlakteInHectaren: 37.2
@@ -272,7 +269,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 400 when missing lengtegraad', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 naam: 'Test_oogstplaats',
                 breedtegraad: 5.1267,
                 oppervlakteInHectaren: 37.2
@@ -283,7 +280,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 400 when missing oppervlakteInHectaren', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 naam: 'Test_oogstplaats',
                 breedtegraad: 5.1267,
                 lengtegraad: 41.63,
@@ -308,7 +305,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 200 and updated oogstplaats', async () => {
-            const response = await request.put(url+'/1').send({
+            const response = await request.put(url+'/1').set('Authorization', authHeader).send({
                 naam: 'Beernaarts',
                 breedtegraad: 21.267,
                 lengtegraad: 3.163,
@@ -322,7 +319,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 404 when updating non existing oogstplaats', async () => {
-            const response = await request.put(url+'/3').send({
+            const response = await request.put(url+'/3').set('Authorization', authHeader).send({
                 naam: 'Beernaarts',
                 breedtegraad: 21.267,
                 lengtegraad: 3.163,
@@ -340,7 +337,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 400 when missing naam', async () => {
-            const response = await request.put(url+'/3').send({
+            const response = await request.put(url+'/3').set('Authorization', authHeader).send({
                 breedtegraad: 5.1267,
                 lengtegraad: 41.63,
                 oppervlakteInHectaren: 37.2
@@ -351,7 +348,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 400 when missing breedtegraad', async () => {
-            const response = await request.put(url+'/3').send({
+            const response = await request.put(url+'/3').set('Authorization', authHeader).send({
                 naam: 'Test_oogstplaats',
                 lengtegraad: 41.63,
                 oppervlakteInHectaren: 37.2
@@ -362,7 +359,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 400 when missing lengtegraad', async () => {
-            const response = await request.put(url+'/3').send({
+            const response = await request.put(url+'/3').set('Authorization', authHeader).send({
                 naam: 'Test_oogstplaats',
                 breedtegraad: 5.1267,
                 oppervlakteInHectaren: 37.2
@@ -373,7 +370,7 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 400 when missing oppervlakteInHectaren', async () => {
-            const response = await request.put(url+'/3').send({
+            const response = await request.put(url+'/3').set('Authorization', authHeader).send({
                 naam: 'Test_oogstplaats',
                 breedtegraad: 5.1267,
                 lengtegraad: 41.63,
@@ -396,13 +393,13 @@ describe('Oogstplaatsen', () => {
         });
 
         it('should return 204 and empty body', async () => {
-            const response = await request.delete(url+'/1');
+            const response = await request.delete(url+'/1').set('Authorization', authHeader);
             expect(response.status).toBe(204);
             expect(response.body[0]).toBe(undefined);
         });
 
         it('should return 400 with invalid oogstplaats id', async () => {
-            const response = await request.delete(url+'/invalid');
+            const response = await request.delete(url+'/invalid').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -410,7 +407,7 @@ describe('Oogstplaatsen', () => {
           });
 
           it('should return 404 with not existing oogstplaats', async () => {
-            const response = await request.delete(url+'/3');
+            const response = await request.delete(url+'/3').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
@@ -422,6 +419,8 @@ describe('Oogstplaatsen', () => {
             });
             expect(response.body.stack).toBeTruthy();
           });
-    })
+    });
+
+    testAuthHeader(() => request.get(url));
 });
 

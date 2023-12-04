@@ -1,6 +1,5 @@
-const supertest = require('supertest');
-const createServer = require('../src/createServer');
-const { getSequelize } = require('../src/data');
+const { withServer, login } = require('./supertest.setup');
+const { testAuthHeader } = require('./common/auth');
 
 const data = {
     oogstplaatsen: [
@@ -87,20 +86,18 @@ const dataToDelete = {
 }
 
 describe('Fruitsoorten', () => {
-    let server;
     let request;
     let sequelize;
+    let authHeader;
+
+    withServer(({supertest, sequelize: s}) => {
+        request = supertest;
+        sequelize = s;
+    });
 
     beforeAll(async () => {
-        server = await createServer(); 
-        request = supertest(server.getApp().callback());
-        sequelize = getSequelize();
-
+        authHeader = await login(request);
       });
-
-    afterAll(async () => {
-        await server.stop();
-    });
 
     const url = '/api/fruitsoorten';
 
@@ -128,7 +125,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 200 and all fruitsoorten', async () => {
-            const response = await request.get(url);
+            const response = await request.get(url).set('Authorization', authHeader);;
             expect(response.status).toBe(200);
             expect(response.body.count).toBe(3);
 
@@ -149,7 +146,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when given an argument', async () => {
-            const response = await request.get(`${url}?invalid=true`);
+            const response = await request.get(url+'?invalid=true').set('Authorization', authHeader);;
             
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -181,7 +178,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 200 and requested fruitsoort by id', async () => {
-            const response = await request.get(url+'/2')
+            const response = await request.get(url+'/2').set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
                 id: 2,
@@ -193,7 +190,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should 404 when requesting not existing fruitsoort', async () => {
-            const response = await request.get(`${url}/4`);
+            const response = await request.get(url+'/4').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
@@ -207,7 +204,7 @@ describe('Fruitsoorten', () => {
           });
 
         it('should 400 when given an argument', async () => {
-            const response = await request.get(`${url}?invalid=true`);
+            const response = await request.get(url+'?invalid=true').set('Authorization', authHeader);
             
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -246,7 +243,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 200 and all koelcellen by fruitsoortId', async () => {
-            const response = await request.get(url+'/2/koelcellen');
+            const response = await request.get(url+'/2/koelcellen').set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body.id).toBe(2);
             expect(response.body.Koelcels[0].id).toBe(2);
@@ -254,7 +251,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should 404 when requesting not existing fruitsoort', async () => {
-            const response = await request.get(`${url}/4`);
+            const response = await request.get(url+'/4/koelcellen').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
@@ -268,7 +265,7 @@ describe('Fruitsoorten', () => {
           });
 
         it('should 400 when given an argument', async () => {
-            const response = await request.get(`${url}?invalid=true`);
+            const response = await request.get(url+'?invalid=true').set('Authorization', authHeader);
             
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -297,7 +294,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 201 and created fruitsoort', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 naam: 'Peer',
                 variëteit: 'Conference',
                 prijsper100kg: 100,
@@ -314,7 +311,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 404 when oogstplaats does not exists', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 naam: 'Peer',
                 variëteit: 'Conference',
                 prijsper100kg: 100,
@@ -335,7 +332,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when missing naam', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 variëteit: 'Conference',
                 prijsper100kg: 100,
                 OogstplaatId: 1,
@@ -347,7 +344,7 @@ describe('Fruitsoorten', () => {
 
 
         it('should return 400 when missing variëteit', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 naam: 'Peer',
                 prijsper100kg: 100,
                 OogstplaatId: 1,
@@ -358,7 +355,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when missing prijsper100kg', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 naam: 'Peer',
                 variëteit: 'Conference',
                 OogstplaatId: 1,
@@ -369,7 +366,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when missing OogstplaatId', async () => {
-            const response = await request.post(url).send({
+            const response = await request.post(url).set('Authorization', authHeader).send({
                 naam: 'Peer',
                 variëteit: 'Conference',
                 prijsper100kg: 100,
@@ -415,7 +412,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 201 and created hoeveelheid', async () => {
-            const response = await request.post(url+'/1/koelcellen/3').send({
+            const response = await request.post(url+'/1/koelcellen/3').set('Authorization', authHeader).send({
                 hoeveelheid: 320
             });
             expect(response.status).toBe(201);
@@ -427,7 +424,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when missing hoeveelheid', async () => {
-            const response = await request.post(url+'/1/koelcellen/3').send({
+            const response = await request.post(url+'/1/koelcellen/3').set('Authorization', authHeader).send({
             });
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -435,7 +432,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 404 when posting non existing fruitsoort', async () => {
-            const response = await request.post(url+'/4/koelcellen/3').send({
+            const response = await request.post(url+'/4/koelcellen/3').set('Authorization', authHeader).send({
                 hoeveelheid: 320});
             
             expect(response.statusCode).toBe(404);
@@ -450,7 +447,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 404 when posting non existing koelcel', async () => {
-            const response = await request.post(url+'/1/koelcellen/4').send({
+            const response = await request.post(url+'/1/koelcellen/4').set('Authorization', authHeader).send({
                 hoeveelheid: 320});
     
             expect(response.statusCode).toBe(404);
@@ -465,22 +462,22 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when combo koelcel fruitsoort already exists', async () => {
-            const response = await request.post(url+'/1/koelcellen/1').send({
+            const response = await request.post(url+'/1/koelcellen/1').set('Authorization', authHeader).send({
                 hoeveelheid: 320});
             expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
-                code: 'VALIDATION_FAILED',
+                code: 'DUPLICATE_VALUES',
                 message: 'Match between koelcel 1 and fruitsoort 1 already exists, please use update (PUT).',
               });
               expect(response.body.stack).toBeTruthy();
         });
 
         it('should return 400 when added hoeveelheid exceeds koelcel capacity', async () => {
-            const response = await request.post(url+'/3/koelcellen/1').send({
+            const response = await request.post(url+'/3/koelcellen/1').set('Authorization', authHeader).send({
                 hoeveelheid: 400});
             expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
-                code: 'VALIDATION_FAILED',
+                code: 'EXCEEDED_CAPACITY',
                 message: 'Hoeveelheid is groter dan capaciteit van koelcel 1',
               });
               expect(response.body.stack).toBeTruthy();
@@ -519,7 +516,7 @@ describe('Fruitsoorten', () => {
         })
 
         it('should return 200 and updated hoeveelheid', async () => {
-            const response = await request.put(url+'/1/koelcellen/1').send({
+            const response = await request.put(url+'/1/koelcellen/1').set('Authorization', authHeader).send({
                 hoeveelheid: 80
             });
             expect(response.status).toBe(200);
@@ -527,7 +524,7 @@ describe('Fruitsoorten', () => {
         })
 
         it('should return 400 when missing hoeveelheid', async () => {
-            const response = await request.put(url+'/1/koelcellen/3').send({
+            const response = await request.put(url+'/1/koelcellen/3').set('Authorization', authHeader).send({
             });
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -535,7 +532,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 404 when posting non existing fruitsoort', async () => {
-            const response = await request.put(url+'/4/koelcellen/3').send({
+            const response = await request.put(url+'/4/koelcellen/3').set('Authorization', authHeader).send({
                 hoeveelheid: 320});
             
             expect(response.statusCode).toBe(404);
@@ -550,7 +547,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 404 when posting non existing koelcel', async () => {
-            const response = await request.put(url+'/1/koelcellen/4').send({
+            const response = await request.put(url+'/1/koelcellen/4').set('Authorization', authHeader).send({
                 hoeveelheid: 320});
             
             expect(response.statusCode).toBe(404);
@@ -565,7 +562,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when combo koelcel fruitsoort not yet exists', async () => {
-            const response = await request.put(url+'/1/koelcellen/3').send({
+            const response = await request.put(url+'/1/koelcellen/3').set('Authorization', authHeader).send({
                 hoeveelheid: 320});
             expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
@@ -576,11 +573,11 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when added hoeveelheid exceeds koelcel capacity', async () => {
-            const response = await request.put(url+'/1/koelcellen/1').send({
+            const response = await request.put(url+'/1/koelcellen/1').set('Authorization', authHeader).send({
                 hoeveelheid: 500});
             expect(response.statusCode).toBe(400);
             expect(response.body).toMatchObject({
-                code: 'VALIDATION_FAILED',
+                code: 'EXCEEDED_CAPACITY',
                 message: 'Hoeveelheid is groter dan capaciteit van koelcel 1',
               });
               expect(response.body.stack).toBeTruthy();
@@ -607,7 +604,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('shoud return 200 and updated fruitsoort', async () => {
-            const response = await request.put(url+'/2').send({
+            const response = await request.put(url+'/2').set('Authorization', authHeader).send({
                 naam: 'Peer',
                 variëteit: 'Durondeau',
                 prijsper100kg: 120,
@@ -622,7 +619,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 404 when updating non existing fruitsoort', async () => {
-            const response = await request.put(url+'/4').send({
+            const response = await request.put(url+'/4').set('Authorization', authHeader).send({
                 naam: 'Peer',
                 variëteit: 'Durondeau',
                 prijsper100kg: 120,
@@ -640,7 +637,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 404 when oogstplaats does not exists', async () => {
-            const response = await request.put(url+'/1').send({
+            const response = await request.put(url+'/1').set('Authorization', authHeader).send({
                 naam: 'Peer',
                 variëteit: 'Conference',
                 prijsper100kg: 100,
@@ -661,7 +658,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when missing naam', async () => {
-            const response = await request.put(url+'/1').send({
+            const response = await request.put(url+'/1').set('Authorization', authHeader).send({
                 variëteit: 'Conference',
                 prijsper100kg: 100,
                 OogstplaatId: 1,
@@ -673,7 +670,7 @@ describe('Fruitsoorten', () => {
 
 
         it('should return 400 when missing variëteit', async () => {
-            const response = await request.put(url+'/1').send({
+            const response = await request.put(url+'/1').set('Authorization', authHeader).send({
                 naam: 'Peer',
                 prijsper100kg: 100,
                 OogstplaatId: 1,
@@ -684,7 +681,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when missing prijsper100kg', async () => {
-            const response = await request.put(url+'/1').send({
+            const response = await request.put(url+'/1').set('Authorization', authHeader).send({
                 naam: 'Peer',
                 variëteit: 'Conference',
                 OogstplaatId: 1,
@@ -695,7 +692,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when missing OogstplaatId', async () => {
-            const response = await request.put(url+'/1').send({
+            const response = await request.put(url+'/1').set('Authorization', authHeader).send({
                 naam: 'Peer',
                 variëteit: 'Conference',
                 prijsper100kg: 100,
@@ -731,13 +728,13 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 204 and empty body', async () => {
-            const response = await request.delete(url+'/1');
+            const response = await request.delete(url+'/1').set('Authorization', authHeader);
             expect(response.status).toBe(204);
             expect(response.body[0]).toBe(undefined);
         });
 
         it('should return 400 with invalid fruitsoort id', async () => {
-            const response = await request.delete(url+'/invalid');
+            const response = await request.delete(url+'/invalid').set('Authorization', authHeader);
       
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');
@@ -745,7 +742,7 @@ describe('Fruitsoorten', () => {
           });
 
           it('should return 404 with not existing fruitsoort', async () => {
-            const response = await request.delete(url+'/4');
+            const response = await request.delete(url+'/4').set('Authorization', authHeader);
             expect(response.statusCode).toBe(404);
             expect(response.body).toMatchObject({
               code: 'NOT_FOUND',
@@ -757,5 +754,5 @@ describe('Fruitsoorten', () => {
             expect(response.body.stack).toBeTruthy();
           });
     });
-
+    testAuthHeader(() => request.get(url));
 });

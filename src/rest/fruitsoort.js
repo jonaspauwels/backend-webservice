@@ -2,7 +2,8 @@ const Router = require('@koa/router');
 const fruitService = require('../service/fruitsoort');
 const Joi = require('joi');
 const validate = require('../core/validation');
-
+const { requireAuthentication ,makeRequireRole } = require('../core/auth');
+const Role = require('../core/roles');
 
 const getAllFruitsoorten = async (ctx) => {
   ctx.body = await fruitService.getAll();  
@@ -118,28 +119,40 @@ module.exports = (app) => {
     prefix: '/fruitsoorten',
   });
 
-  router.get('/', 
+  const requireAdmin = makeRequireRole(Role.ADMIN);
+
+  // enkel ingelogde users kunnen fruitsoort info opvragen of hoeveelheden wijzigen, enkel ADMIN kan wijziginen aanbrengen in fruitsoorten
+
+  router.get('/',
+    requireAuthentication,
     validate(getAllFruitsoorten.validationScheme),
     getAllFruitsoorten);
   router.get('/:id',
+    requireAuthentication,
     validate(getFruitsoortById.validationScheme),
     getFruitsoortById);
   router.get('/:fruitsoortId/koelcellen',
+    requireAuthentication,
     validate(getKoelcellenByFruitsoortId.validationScheme),
     getKoelcellenByFruitsoortId);
   router.post('/',
+    requireAuthentication, requireAdmin,
     validate(createFruitsoort.validationScheme),
     createFruitsoort);
   router.post('/:fruitsoortId/koelcellen/:koelcelId',
+    requireAuthentication,
     validate(createHoeveelheid.validationScheme),
     createHoeveelheid);
   router.put('/:fruitsoortId/koelcellen/:koelcelId',
+    requireAuthentication,
     validate(updateHoeveelheid.validationScheme),
     updateHoeveelheid);
   router.put('/:id',
+    requireAuthentication, requireAdmin,
     validate(updateFruitsoort.validationScheme),
     updateFruitsoort);
   router.delete('/:id',
+    requireAuthentication, requireAdmin,
     validate(deleteFruitsoort.validationScheme),
     deleteFruitsoort);
 
