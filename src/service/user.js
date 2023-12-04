@@ -121,12 +121,12 @@ const register = async ({ naam, email, password }) => {
     
     try {
       const passwordHash = await hashPassword(password);
-    
+      console.log(passwordHash)
       const user = await getSequelize().models.User.create({
           naam, 
           email,
           password_hash: passwordHash,
-          roles: JSON.stringify([Role.USER, Role.ADMIN])
+          roles: JSON.stringify(Role.USER)
       });
       return await makeLoginData(user);
       } catch (error){

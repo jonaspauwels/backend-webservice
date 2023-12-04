@@ -10,8 +10,8 @@
 
 **Logingegevens**
 
-- Gebruikersnaam/e-mailadres:
-- Wachtwoord:
+- Gebruikersnaam/e-mailadres: <jonas.pauwels@student.hogent.be>
+- Wachtwoord: AppelenEnPeren
 
 > Vul eventueel aan met extra accounts voor administrators of andere rollen.
 
@@ -125,7 +125,6 @@ welke oogstplaats in welke koelcel zit en vice versa.
 ### Web Services
 
 > Zijn er gekende bugs?
-
 
 ## Extra
 
