@@ -9,12 +9,12 @@ module.exports = {
       maxAge: 3 * 60 * 60, 
     },
     database: {
-      client: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      name: 'fruit',
-      username: 'root',
-      password: process.env.DATABASE_PASSWORD
+      // client: 'mysql',
+      // host: 'localhost',
+      // port: process.env.DATABASE_PORT,
+      // name: 'fruit',
+      // username: 'root',
+      // password: process.env.DATABASE_PASSWORD
     },
     auth: {
       argon: {

@@ -18,7 +18,6 @@ async function initializeData() {
     const logger = getLogger();
     logger.info('Initializing database connection...');
 
-    console.log(DATABASE_PASSWORD)
     sequelizeOptions = {
         database: DATABASE_NAME,
         username: DATABASE_USERNAME,
@@ -38,7 +37,8 @@ async function initializeData() {
 
     sequelize = new Sequelize(sequelizeOptions);
 
-
+      //model aanmaken voor sequelize zodat het verder gebruikt kan worden voor CRUD-operaties
+      initializeModel(sequelize);
 
     //connectie leggen via sequelize
     try {
@@ -48,8 +48,7 @@ async function initializeData() {
         logger.error('Unable to connect to the database:', error);
       }
       
-      //model aanmaken voor sequelize zodat het verder gebruikt kan worden voor CRUD-operaties
-      initializeModel(sequelize);
+
     //migrations uitvoeren via Umzug
     const migrations = new Umzug({
         migrations: { glob: 'src/data/migrations/*.js',
