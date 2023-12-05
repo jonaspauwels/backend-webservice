@@ -1,4 +1,4 @@
-const { shutdownData, getSequelize } = require('../src/data'); // 👈 2 en 3
+const { shutdownData, getSequelize } = require('../src/data');
 
 module.exports = async () => {
   // Remove any leftover data

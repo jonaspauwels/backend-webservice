@@ -64,7 +64,6 @@ describe('Health', () => {
 
     it('should return 404 when accessing invalid url', async () => {
       const response = await request.get('/invalid');
-        console.log(response.body)
       expect(response.statusCode).toBe(404);
       expect(response.body).toEqual({
         code: 'NOT_FOUND',

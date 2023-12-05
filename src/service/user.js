@@ -121,7 +121,6 @@ const register = async ({ naam, email, password }) => {
     
     try {
       const passwordHash = await hashPassword(password);
-      console.log(passwordHash)
       const user = await getSequelize().models.User.create({
           naam, 
           email,

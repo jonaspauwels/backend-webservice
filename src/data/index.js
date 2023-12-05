@@ -26,9 +26,8 @@ async function initializeData() {
         dialect: DATABASE_CLIENT,
         host:DATABASE_HOST,
         port: DATABASE_PORT,
-        options: {
-            logging: msg => logger.info(msg),
-        }
+        logging: msg => logger.info(msg),
+        
     };
     // connecteren met mysql en database creëeren indien onbestaande
     logger.info('Creating Database if not exists');
@@ -100,8 +99,6 @@ async function initializeData() {
     }
    
     
-    
-
     return sequelize;
 };
 
