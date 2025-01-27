@@ -125,7 +125,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 200 and all fruitsoorten', async () => {
-            const response = await request.get(url).set('Authorization', authHeader);;
+            const response = await request.get(url).set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body.count).toBe(3);
 
@@ -146,7 +146,7 @@ describe('Fruitsoorten', () => {
         });
 
         it('should return 400 when given an argument', async () => {
-            const response = await request.get(url+'?invalid=true').set('Authorization', authHeader);;
+            const response = await request.get(url+'?invalid=true').set('Authorization', authHeader);
             
             expect(response.statusCode).toBe(400);
             expect(response.body.code).toBe('VALIDATION_FAILED');

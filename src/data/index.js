@@ -49,6 +49,7 @@ async function initializeData() {
       
      //model aanmaken voor sequelize zodat het verder gebruikt kan worden voor CRUD-operaties
      initializeModel(sequelize);
+     
     //migrations uitvoeren via Umzug
     const migrations = new Umzug({
         migrations: { glob: 'src/data/migrations/*.js',

@@ -60,4 +60,3 @@ DATABASE_PASSWORD=''
 ### uitvoeren testen
 
 De testen wordten uitgevoerd via `yarn test`. Indien er ook coverage moet gegenereerd worden dan dient het commando `yarn test:coverage` gebruikt te worden.
-

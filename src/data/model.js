@@ -42,7 +42,7 @@ const initializeModel = async (sequelize) => {
     koelcel.belongsToMany(fruitsoort, { through: HoeveelheidPerKoelcel});
 
     //synchronizeren met database
-    await sequelize.sync({ alter: true })
+    //await sequelize.sync({ alter: true })
     return sequelize;
 }
 
